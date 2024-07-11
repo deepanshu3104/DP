@@ -1,11 +1,12 @@
-import { View, Text } from 'react-native'
+import { Text } from 'react-native'
 import React from 'react'
+import { Wrapper } from '../utilities/Helpers'
 
 const Register = () => {
   return (
-    <View>
+    <Wrapper>
       <Text>Register</Text>
-    </View>
+    </Wrapper>
   )
 }
 

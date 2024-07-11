@@ -4,9 +4,7 @@ export const width = Dimensions.get('window').width
 export const height = Dimensions.get('window').height
 
 export const colors = {
-
+    white:'white'
 }
 
-export const fonts ={
-    
-}
+export const fonts ={}

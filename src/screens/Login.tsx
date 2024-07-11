@@ -1,11 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import { Wrapper } from '../utilities/Helpers'
 
 const Login = () => {
   return (
-    <View>
+    <Wrapper>
       <Text>Login</Text>
-    </View>
+    </Wrapper>
   )
 }
 
