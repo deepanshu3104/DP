@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "206703204938",
+    "project_id": "dp-dp-7b320",
+    "storage_bucket": "dp-dp-7b320.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206703204938:android:e19f452ea6d8f30499e4b3",
+        "android_client_info": {
+          "package_name": "com.dp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206703204938-8vhi9t9hqbf5ouhj8krjqhtie5fsn5en.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCkyYgT0DptcfJeIXNI0PfD9X5yQlMPW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206703204938-8vhi9t9hqbf5ouhj8krjqhtie5fsn5en.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
