@@ -4,17 +4,20 @@ import { styles } from './styles'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal';
 import { AppTextProps, CommonbtnProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
+import { colors } from './constants';
 
 export const Wrapper : React.FC<WrapperProps> = ({children}) => {
   return (
    <SafeAreaView style={styles.container}>
-    <StatusBar backgroundColor={'black'}  barStyle={'light-content'}/>
+    <StatusBar backgroundColor={colors.main1}  barStyle={'light-content'}/>
     <ScrollView>
         {children}
     </ScrollView>
    </SafeAreaView>
   )
 }
+
+
 
 export const ImageComponent: React.FC<ImageComponentProps> = ({
   style,

@@ -1,11 +1,15 @@
-import {  Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import React from "react";
-import { ImageComponent, Wrapper } from "../utilities/Helpers";
+import {
+  ImageComponent,
+  SpaceComponent,
+  TouchableComponent,
+  Wrapper,
+} from "../utilities/Helpers";
 import { Images } from "../utilities/Images";
-import { width } from "../utilities/constants";
+import { colors, height, width } from "../utilities/constants";
 
-const Login = () => {
-
+const Login = (props:any) => {
   // useEffect(() => {
   //   GoogleSignin.configure({
   //     webClientId:
@@ -69,6 +73,11 @@ const Login = () => {
         style={styles.logo}
         tintColor="black"
       />
+      <TouchableComponent style={styles.btnview} onPress={()=>{
+        props.navigation.navigate('Register')
+      }}>
+        <Text>Continue with Google</Text>
+      </TouchableComponent>
     </Wrapper>
   );
 };
@@ -80,8 +89,17 @@ const styles = StyleSheet.create({
     width: width / 1.1,
     alignSelf: "center",
     textAlign: "center",
-    color: "black",
+    // color: "grey",
     fontSize: width / 10,
   },
   logo: { width: width / 1.1, height: 200, alignSelf: "center" },
+  btnview: {
+    backgroundColor: colors.main2,
+    width: width / 1.1,
+    height: 50,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius:8
+  },
 });

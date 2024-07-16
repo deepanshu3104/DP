@@ -4,7 +4,7 @@ import { colors, width } from "./constants";
 export const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:colors.black
+        backgroundColor:colors.main1
     },
     loadview:{
         width: 200,
