@@ -1,4 +1,5 @@
 import {
+  TextInputProps,
   TextProps,
   TextStyle,
   TouchableOpacityProps,
@@ -30,4 +31,49 @@ export interface CommonbtnProps {
   onPress: () => void;
   title: string;
   opacity?: number;
+}
+
+export interface TouchableTextProps extends TouchableOpacityProps {
+  vstyle?: ViewStyle;
+  text?: string;
+  style?: TextStyle;
+}
+
+export interface TouchableImageProps extends TouchableOpacityProps {
+  vstyle?: ViewStyle;
+  style?: ImageStyle;
+  source?: Source;
+  resizeMode?: ResizeMode;
+  tintColor?: string;
+}
+
+export interface CommonInputProps extends TextInputProps {
+  label?: string;
+  iconSource?: any;
+  isicon?: 'yes' | 'no';
+  iconstyle?: ImageStyle;
+  error?: string | any;
+  showlabel?: 'yes' | 'no';
+  errorspacing?: 'yes' | 'no';
+  lefticon?: 'yes' | 'no';
+  multi?: 'yes' | 'no';
+  width?: number;
+  placeholderTextColor?: string;
+  eye?: 'yes' | 'no';
+  eyename?: any;
+  onPress?: () => void;
+  eyestyle?: ImageStyle;
+}
+
+export interface CommonInputBtnProps {
+  onPress?: () => void;
+  value?: string;
+  error?: any;
+  color?: string;
+  iconSource?: any;
+  iconstyle?: any;
+  errorspacing?: 'yes' | 'no';
+  isdropdown?: 'yes' | 'no';
+  dropSource?: any;
+  dropstyle?: any;
 }

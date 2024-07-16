@@ -6,7 +6,7 @@ export const height = Dimensions.get('window').height
 export const colors = {
     white:'white',
     black:'black',
-
+red:'red'
 }
 
 export const fonts ={}

@@ -5,7 +5,7 @@ import { Wrapper } from '../utilities/Helpers'
 const Register = () => {
   return (
     <Wrapper>
-      <Text>Register</Text>
+      <Text>Datify</Text>
     </Wrapper>
   )
 }

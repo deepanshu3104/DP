@@ -3,7 +3,7 @@ import React from 'react'
 import { styles } from './styles'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal';
-import { AppTextProps, CommonbtnProps, ImageComponentProps, TouchableComponentProps, WrapperProps } from './Props'
+import { AppTextProps, CommonbtnProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
 
 export const Wrapper : React.FC<WrapperProps> = ({children}) => {
   return (
@@ -50,6 +50,38 @@ export const TouchableComponent: React.FC<TouchableComponentProps> = ({
       onPressIn={onPressIn}>
       {children}
     </TouchableOpacity>
+  );
+};
+
+export const TouchableImage: React.FC<TouchableImageProps> = ({
+  onPress,
+  vstyle,
+  style,
+  source,
+  resizeMode,
+  tintColor,
+}) => {
+  return (
+    <TouchableComponent onPress={onPress} style={vstyle}>
+      <FastImage
+        source={source}
+        style={style}
+        resizeMode={resizeMode}
+        tintColor={tintColor}
+      />
+    </TouchableComponent>
+  );
+};
+export const TouchableText: React.FC<TouchableTextProps> = ({
+  onPress,
+  vstyle,
+  text,
+  style,
+}) => {
+  return (
+    <TouchableComponent onPress={onPress} style={vstyle}>
+      <Text style={style}>{text}</Text>
+    </TouchableComponent>
   );
 };
 
