@@ -1,13 +1,13 @@
 import { Text, StyleSheet, View } from "react-native";
 import React from "react";
 import {
+  AppText,
   ImageComponent,
-  SpaceComponent,
   TouchableComponent,
   Wrapper,
 } from "../utilities/Helpers";
 import { Images } from "../utilities/Images";
-import { colors, height, width } from "../utilities/constants";
+import { colors, fonts, height, width } from "../utilities/constants";
 
 const Login = (props:any) => {
   // useEffect(() => {
@@ -67,16 +67,17 @@ const Login = (props:any) => {
 
   return (
     <Wrapper>
-      <Text style={styles.title}>Datify</Text>
+      <AppText style={styles.title}>Datify</AppText>
       <ImageComponent
         source={Images.logo}
         style={styles.logo}
-        tintColor="black"
+        tintColor={colors.black}
       />
       <TouchableComponent style={styles.btnview} onPress={()=>{
         props.navigation.navigate('Register')
       }}>
-        <Text>Continue with Google</Text>
+        <ImageComponent source={Images.google} style={styles.btnimage}/>
+        <AppText style={styles.btntext}>Continue with Google</AppText>
       </TouchableComponent>
     </Wrapper>
   );
@@ -89,17 +90,32 @@ const styles = StyleSheet.create({
     width: width / 1.1,
     alignSelf: "center",
     textAlign: "center",
-    // color: "grey",
-    fontSize: width / 10,
+    // color: colors.main2,
+    fontSize: width / 8,
+    fontFamily:fonts.playregular,
+    marginTop:width/10
   },
-  logo: { width: width / 1.1, height: 200, alignSelf: "center" },
+  logo: { width: width / 1.1, height: width/1.5, alignSelf: "center" ,marginVertical:width/6},
   btnview: {
     backgroundColor: colors.main2,
-    width: width / 1.1,
-    height: 50,
+    width: width / 1.15,
+    height: 55,
     alignSelf: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
     alignItems: "center",
-    borderRadius:8
+    borderRadius:8,
+    flexDirection:'row'
   },
+  btnimage:{
+    width: 25,
+    height: 25,
+    resizeMode: "contain",
+    right:30
+  },
+  btntext:{
+    color: colors.black,
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  }
 });

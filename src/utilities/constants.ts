@@ -11,4 +11,6 @@ main1:'#191716',
 main2:'#DADFF7'
 }
 
-export const fonts ={}
+export const fonts ={
+    playregular:'PlaywriteCU-Regular'
+}
