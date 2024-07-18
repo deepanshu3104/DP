@@ -35,16 +35,16 @@ export const CommonInput: React.FC<CommonInputProps> = ({
 }) => {
   return (
     <View>
-      {showlabel === 'no' ? null : <Text style={styles.label}>{label}</Text>}
+      {showlabel === 'yes' && <Text style={styles.label}>{label}</Text>}
       <View style={styles.textBoxBtnHolder}>
-        {isicon === 'no' ? null : (
-          <View>
+        {isicon === 'yes' && (
+
             <ImageComponent
               source={iconSource}
               style={iconstyle}
-              tintColor={colors.white}
+              tintColor={colors.main2}
             />
-          </View>
+
         )}
         <TextInput
           underlineColorAndroid="transparent"
@@ -70,7 +70,7 @@ export const CommonInput: React.FC<CommonInputProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           textAlignVertical={textAlignVertical}
-          placeholderTextColor={placeholderTextColor}
+          placeholderTextColor={colors.main2}
         />
         {eye === 'yes' ? (
           <TouchableComponent
@@ -114,7 +114,7 @@ export const CommonInputBtn: React.FC<CommonInputBtnProps> = ({
             resizeMode={'contain'}
             style={iconstyle}
             source={iconSource}
-            tintColor={colors.white}
+            tintColor={colors.main2}
           />
           <Text
             style={{
@@ -154,14 +154,14 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignSelf: 'center',
     // justifyContent: 'center',
-    shadowColor: colors.white,
+    shadowColor: colors.main2,
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    borderColor: colors.white,
+    borderColor: colors.main2,
     shadowOffset: {width: 0, height: 0},
     borderWidth: 1,
     height: 50,
-    backgroundColor: colors.white,
+    backgroundColor: colors.main1,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: width / 1.35,
     left: 5,
+    color:colors.main2
   },
   visibilityBtn: {
     position: 'absolute',
