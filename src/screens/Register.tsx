@@ -15,6 +15,7 @@ import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const Register = () => {
+  const [image, setImage] = useState<any>("");
   const [datepickermodal, setdatePickermodal] = useState<boolean>(false);
 
   const handleConfirm = (date: any) => {
@@ -51,19 +52,20 @@ const Register = () => {
   return (
     <Wrapper>
       <Text style={styles.title}>Datify</Text>
-      {/* <TouchableComponent>
-        {formik.values.image.length !== 0 ? (
+      <TouchableComponent style={styles.imageback}>
+        {image !== "" ? (
           <ImageComponent
-            source={{ uri: formik?.values?.image?.path }}
-            style={styles.image}
+            source={{ uri: image?.path }}
+            style={{ width: 25, height: 25 }}
           />
         ) : (
           <ImageComponent
-            source={Images.user}
-            style={{ width: 25, height: 25 }}
+            tintColor={colors.main2}
+            source={Images.profile}
+            style={{ height: width / 3, width: width / 3, borderRadius: 100 }}
           />
         )}
-      </TouchableComponent> */}
+      </TouchableComponent>
       <CommonInput
         placeholder="Enter Display Name"
         isicon="yes"
@@ -112,5 +114,14 @@ const styles = StyleSheet.create({
     // color: colors.main2,
     fontSize: width / 8,
     fontFamily: fonts.playregular,
+    marginTop:10
+  },
+  imageback: {
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    height: width / 3,
+    width: width / 3,
+    borderRadius: 100,
   },
 });
