@@ -60,9 +60,8 @@ const Register = () => {
           />
         ) : (
           <ImageComponent
-            tintColor={colors.main2}
-            source={Images.profile}
-            style={{ height: width / 3, width: width / 3, borderRadius: 100 }}
+            source={Images.user}
+            style={{ height: width / 2.5, width: width / 2.5 }}
           />
         )}
       </TouchableComponent>
@@ -122,6 +121,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: width / 3,
     width: width / 3,
-    borderRadius: 100,
+    borderRadius: 8,
+    borderWidth:1.5,
+    borderColor:colors.main2,
   },
 });
