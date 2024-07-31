@@ -6,13 +6,14 @@ import {
   TouchableComponent,
   Wrapper,
 } from "../utilities/Helpers";
-import { colors, fonts, width } from "../utilities/constants";
+import { colors, fonts, Gender, width } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
 import { Images } from "../utilities/Images";
 import { useFormik } from "formik";
 import { registerSchema } from "../utilities/Schema";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { DropInput } from "../utilities/DropInput";
 
 const Register = () => {
   const [image, setImage] = useState<any>("");
@@ -41,6 +42,8 @@ const Register = () => {
     initialValues: {
       name: "",
       dob: "",
+      gender:"",
+      showme:"",
       image: [],
     },
     validationSchema: registerSchema,
@@ -61,9 +64,10 @@ const Register = () => {
         ) : (
           <ImageComponent
             source={Images.user}
-            style={{ height: width / 2.5, width: width / 2.5 }}
+            style={{ height: width / 3.5, width: width / 3.5 }}
           />
         )}
+         <ImageComponent source={Images.pencil} style={styles.pencil} />
       </TouchableComponent>
       <CommonInput
         placeholder="Enter Display Name"
@@ -91,6 +95,25 @@ const Register = () => {
         error={formik.touched.dob && formik.errors.dob ? formik.errors.dob : ""}
         errorspacing={formik.touched.dob && formik.errors.dob ? "yes" : "no"}
       />
+      <DropInput
+      
+          data={Gender}
+          placeholder="Select Gender"
+          imgsrc={Images.cake}
+          value={formik.values.gender}
+          onChange={(item: any) => {
+            formik.setFieldValue('service', item.type_services);
+          }}
+          error={
+            formik.touched.gender && formik.errors.gender
+              ? formik.errors.gender
+              : ''
+          }
+          errorspacing={
+            formik.touched.gender && formik.errors.gender ? 'yes' : 'no'
+          }
+          label="label"
+        />
       <Commonbtn title="Save" onPress={formik.handleSubmit} />
       <DateTimePickerModal
         isVisible={datepickermodal}
@@ -110,7 +133,7 @@ const styles = StyleSheet.create({
     width: width / 1.1,
     alignSelf: "center",
     textAlign: "center",
-    // color: colors.main2,
+    color: colors.main2,
     fontSize: width / 8,
     fontFamily: fonts.playregular,
     marginTop:10
@@ -122,7 +145,15 @@ const styles = StyleSheet.create({
     height: width / 3,
     width: width / 3,
     borderRadius: 8,
-    borderWidth:1.5,
+    borderWidth:1,
     borderColor:colors.main2,
+    marginVertical:width/15
+  },
+  pencil: {
+    height: 30,
+    width: 30,
+    position: 'absolute',
+    top: -10,
+    right: -6,
   },
 });

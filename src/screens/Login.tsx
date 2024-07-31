@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     width: width / 1.1,
     alignSelf: "center",
     textAlign: "center",
-    // color: colors.main2,
+    color: colors.main2,
     fontSize: width / 8,
     fontFamily:fonts.playregular,
     marginTop:width/10

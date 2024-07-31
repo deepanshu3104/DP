@@ -1,14 +1,18 @@
 import * as yup from 'yup';
 
 export const registerSchema = yup.object().shape({
-  number: yup
+  name: yup
     .string()
-    .required('Please enter your Phone Number')
-    .trim('Please enter your Phone Number')
-    .min(10, 'Phone number must be 10 characters long'),
+    .required('Please enter your Display Name')
+    .trim('Please enter your Display Name'),
   dob: yup
     .string()
     .required('Please select your Date of Birth')
     .trim('Please select your Date of Birth'),
-  skills: yup.array().min(1, 'Please select atleast one Skill'),
+  gender: yup
+  .string()
+  .required('Please select your Gender')
+  .trim('Please select your Gender'),
+  
+
 });

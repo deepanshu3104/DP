@@ -3,5 +3,6 @@ export const Images = {
     google: require('./assets/google.png'),
     cake: require('./assets/cake.png'),
     user: require('./assets/user.png'),
+    pencil: require('./assets/pencil.png'),
 }
 
