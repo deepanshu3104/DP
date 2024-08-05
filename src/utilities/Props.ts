@@ -7,6 +7,10 @@ import {
 } from "react-native";
 import { ImageStyle, ResizeMode, Source } from "react-native-fast-image";
 
+export interface InitialProps {
+  route?:any
+  navigation?:any
+}
 export interface WrapperProps {
   children?: React.ReactNode;
 }

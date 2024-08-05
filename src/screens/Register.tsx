@@ -6,6 +6,7 @@ import {
   TouchableComponent,
   Wrapper,
 } from "../utilities/Helpers";
+import { InitialProps } from "../utilities/Props";
 import { colors, fonts, Gender, width } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
 import { Images } from "../utilities/Images";
@@ -15,7 +16,8 @@ import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
 
-const Register = () => {
+
+const Register:React.FC<InitialProps> = (props) => {
   const [image, setImage] = useState<any>("");
   const [datepickermodal, setdatePickermodal] = useState<boolean>(false);
 
@@ -42,8 +44,8 @@ const Register = () => {
     initialValues: {
       name: "",
       dob: "",
-      gender:"",
-      showme:"",
+      gender: "",
+      showme: "",
       image: [],
     },
     validationSchema: registerSchema,
@@ -67,7 +69,7 @@ const Register = () => {
             style={{ height: width / 3.5, width: width / 3.5 }}
           />
         )}
-         <ImageComponent source={Images.pencil} style={styles.pencil} />
+        <ImageComponent source={Images.pencil} style={styles.pencil} />
       </TouchableComponent>
       <CommonInput
         placeholder="Enter Display Name"
@@ -96,25 +98,49 @@ const Register = () => {
         errorspacing={formik.touched.dob && formik.errors.dob ? "yes" : "no"}
       />
       <DropInput
-      
-          data={Gender}
-          placeholder="Select Gender"
-          imgsrc={Images.cake}
-          value={formik.values.gender}
-          onChange={(item: any) => {
-            formik.setFieldValue('service', item.type_services);
-          }}
-          error={
-            formik.touched.gender && formik.errors.gender
-              ? formik.errors.gender
-              : ''
-          }
-          errorspacing={
-            formik.touched.gender && formik.errors.gender ? 'yes' : 'no'
-          }
-          label="label"
+        data={Gender}
+        placeholder="Select Gender"
+        imgsrc={Images.cake}
+        value={formik.values.gender}
+        onChange={(item: any) => {
+          formik.setFieldValue("gender", item.label);
+        }}
+        error={
+          formik.touched.gender && formik.errors.gender
+            ? formik.errors.gender
+            : ""
+        }
+        errorspacing={
+          formik.touched.gender && formik.errors.gender ? "yes" : "no"
+        }
+        label="label"
+      />
+      <DropInput
+        data={Gender}
+        placeholder="Show me"
+        imgsrc={Images.cake}
+        value={formik.values.showme}
+        onChange={(item: any) => {
+          formik.setFieldValue("showme", item.label);
+        }}
+        error={
+          formik.touched.showme && formik.errors.showme
+            ? formik.errors.showme
+            : ""
+        }
+        errorspacing={
+          formik.touched.showme && formik.errors.showme ? "yes" : "no"
+        }
+        label="label"
+      />
+     
+      <Commonbtn 
+      title="Save"
+      onPress={()=>{
+        props.navigation.navigate('Home')
+      }}
+      //  onPress={formik.handleSubmit}
         />
-      <Commonbtn title="Save" onPress={formik.handleSubmit} />
       <DateTimePickerModal
         isVisible={datepickermodal}
         maximumDate={new Date()}
@@ -136,7 +162,7 @@ const styles = StyleSheet.create({
     color: colors.main2,
     fontSize: width / 8,
     fontFamily: fonts.playregular,
-    marginTop:10
+    marginTop: 10,
   },
   imageback: {
     alignSelf: "center",
@@ -145,14 +171,14 @@ const styles = StyleSheet.create({
     height: width / 3,
     width: width / 3,
     borderRadius: 8,
-    borderWidth:1,
-    borderColor:colors.main2,
-    marginVertical:width/15
+    borderWidth: 1,
+    borderColor: colors.main2,
+    marginVertical: width / 15,
   },
   pencil: {
     height: 30,
     width: 30,
-    position: 'absolute',
+    position: "absolute",
     top: -10,
     right: -6,
   },

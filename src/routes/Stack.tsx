@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
+import Home from '../screens/Home';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -14,6 +15,7 @@ const Stack = () => {
         <stack.Navigator screenOptions={{headerShown: false}}>
           <stack.Screen name="Login" component={Login} />
           <stack.Screen name="Register" component={Register} />
+          <stack.Screen name="Home" component={Home} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

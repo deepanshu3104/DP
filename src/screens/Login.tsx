@@ -8,8 +8,9 @@ import {
 } from "../utilities/Helpers";
 import { Images } from "../utilities/Images";
 import { colors, fonts, height, width } from "../utilities/constants";
+import { InitialProps } from "../utilities/Props";
 
-const Login = (props:any) => {
+const Login:React.FC<InitialProps>  = (props:any) => {
   // useEffect(() => {
   //   GoogleSignin.configure({
   //     webClientId:
