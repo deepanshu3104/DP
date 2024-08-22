@@ -1,12 +1,12 @@
-import React from 'react'
-import {LogBox} from 'react-native';
+import React, { useEffect } from 'react'
+import { LogBox } from 'react-native';
 import Stack from './src/routes/Stack'
 LogBox.ignoreAllLogs();
 
 const App = () => {
   return (
     <>
-     <Stack />
+      <Stack />
     </>
   )
 }

@@ -1,16 +1,52 @@
-import { Text, StyleSheet, View } from "react-native";
-import React from "react";
+import { StyleSheet, Alert } from "react-native";
+import React, { useState } from "react";
 import {
   AppText,
+  Commonbtn,
+  GoogleBtn,
   ImageComponent,
+  LWrapper,
+  SpaceComponent,
   TouchableComponent,
-  Wrapper,
 } from "../utilities/Helpers";
 import { Images } from "../utilities/Images";
-import { colors, fonts, height, width } from "../utilities/constants";
+import { colors, fonts, width } from "../utilities/constants";
 import { InitialProps } from "../utilities/Props";
+import { CommonInput } from "../utilities/Input";
+import { useFormik } from "formik";
+import { loginSchema } from "../utilities/Schema";
 
-const Login:React.FC<InitialProps>  = (props:any) => {
+const Login: React.FC<InitialProps> = (props: any) => {
+  
+  const [show, setShow] = useState<boolean>(true)
+
+  const [focus, setFocus] = useState<any>([
+    { key: 1, name: 'email', status: false },
+    { key: 2, name: 'password', status: false }
+  ])
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    validationSchema: loginSchema,
+    onSubmit: () => {
+      Login();
+    },
+  });
+
+  function DoFocus(value: any) {
+    focus.forEach((item: any) => {
+      if (item.name == value) {
+        item.status = true
+      } else {
+        item.status = false
+      }
+    });
+    setFocus([...focus])
+  }
+
   // useEffect(() => {
   //   GoogleSignin.configure({
   //     webClientId:
@@ -66,21 +102,62 @@ const Login:React.FC<InitialProps>  = (props:any) => {
   //   }
   // };
 
+  function Login (){
+    Alert.alert('Login')
+  }
+
   return (
-    <Wrapper>
+    <LWrapper value="Login">
       <AppText style={styles.title}>Datify</AppText>
-      <ImageComponent
-        source={Images.logo}
-        style={styles.logo}
-        tintColor={colors.black}
+
+      <CommonInput
+        onFocus={() => {
+          DoFocus('email')
+        }}
+        focus={focus[0].status}
+        placeholder="Email or Phone number"
+        isicon="yes"
+        iconSource={Images.user}
+        iconstyle={{ width: 25, height: 25 }}
+        value={formik.values.email}
+        onChangeText={formik.handleChange("email")}
+        onBlur={formik.handleBlur("email")}
+        error={
+          formik.touched.email && formik.errors.email ? formik.errors.email : ""
+        }
+        errorspacing={formik.touched.email && formik.errors.email ? "yes" : "no"}
       />
-      <TouchableComponent style={styles.btnview} onPress={()=>{
+      <CommonInput
+        onFocus={() => {
+          DoFocus('password')
+        }}
+        focus={focus[1].status}
+        placeholder="Password"
+        isicon="yes"
+        iconSource={Images.user}
+        iconstyle={{ width: 25, height: 25 }}
+        value={formik.values.password}
+        onChangeText={formik.handleChange("password")}
+        eye="yes"
+        eyename={show ? 'eye' :'eye-slash'}
+        secureTextEntry={show}
+        onPress={()=>{
+          setShow(!show)
+        }}
+        onBlur={formik.handleBlur("password")}
+        error={
+          formik.touched.password && formik.errors.password ? formik.errors.password : ""
+        }
+        errorspacing={formik.touched.password && formik.errors.password ? "yes" : "no"}
+      />
+      <AppText style={styles.forgotpass}>Forgot your Password ?</AppText>
+      <SpaceComponent />
+      <Commonbtn title="Login" onPress={formik.handleSubmit} />
+      <AppText style={styles.or}>OR</AppText>
+      <GoogleBtn onPress={() => {
         props.navigation.navigate('Register')
-      }}>
-        <ImageComponent source={Images.google} style={styles.btnimage}/>
-        <AppText style={styles.btntext}>Continue with Google</AppText>
-      </TouchableComponent>
-    </Wrapper>
+      }} />
+    </LWrapper>
   );
 };
 
@@ -93,30 +170,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.main2,
     fontSize: width / 8,
-    fontFamily:fonts.playregular,
-    marginTop:width/10
+    fontFamily: fonts.playregular,
+    marginVertical: width / 11
   },
-  logo: { width: width / 1.1, height: width/1.5, alignSelf: "center" ,marginVertical:width/6},
-  btnview: {
-    backgroundColor: colors.main2,
-    width: width / 1.15,
-    height: 55,
-    alignSelf: "center",
-    justifyContent: 'center',
-    alignItems: "center",
-    borderRadius:8,
-    flexDirection:'row'
+  logo: { width: width / 1.1, height: width / 1.5, alignSelf: "center", marginVertical: width / 6 },
+ 
+  forgotpass: {
+    alignSelf: 'flex-end',
+    right: 15,
+    color: colors.main2,
+    fontWeight:'bold',
+    top:-5
   },
-  btnimage:{
-    width: 25,
-    height: 25,
-    resizeMode: "contain",
-    right:30
+  or: {
+    alignSelf: 'center',
+    color: colors.main2,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    fontSize: 16
   },
-  btntext:{
-    color: colors.black,
+  dontrem: {
+    alignSelf: 'center',
+    color: colors.main2,
+    fontWeight: 'bold',
     fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
+    marginBottom: 8,
+
   }
 });

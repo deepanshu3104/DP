@@ -13,6 +13,7 @@ export interface InitialProps {
 }
 export interface WrapperProps {
   children?: React.ReactNode;
+  value?:string
 }
 export interface ImageComponentProps {
   style?: ImageStyle;
@@ -33,7 +34,7 @@ export interface AppTextProps extends TextProps {
 }
 export interface CommonbtnProps {
   onPress: () => void;
-  title: string;
+  title?: string;
   opacity?: number;
 }
 
@@ -53,6 +54,7 @@ export interface TouchableImageProps extends TouchableOpacityProps {
 
 export interface CommonInputProps extends TextInputProps {
   label?: string;
+  focus?: any;
   iconSource?: any;
   isicon?: 'yes' | 'no';
   iconstyle?: ImageStyle;

@@ -1,10 +1,11 @@
 import { FlatList, Text, View } from "react-native";
 import React from "react";
 import { InitialProps } from "../utilities/Props";
-import { ImageComponent, Wrapper } from "../utilities/Helpers";
+import { ImageComponent, TouchableImage, Wrapper } from "../utilities/Helpers";
 import { profiles } from "../utilities/data";
-import { width } from "../utilities/constants";
+import { colors, width } from "../utilities/constants";
 import { Images } from "../utilities/Images";
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 function RenderImages({images}:any) {
 
@@ -81,6 +82,7 @@ function renderProfiles({ item }: any) {
 const Home: React.FC<InitialProps> = (props) => {
   return (
     <Wrapper>
+      <View><Text>Datify</Text><Icon name={'comment-dots'} size={25} color={colors.main2} /></View>
       <FlatList data={profiles} numColumns={3} renderItem={renderProfiles} />
     </Wrapper>
   );

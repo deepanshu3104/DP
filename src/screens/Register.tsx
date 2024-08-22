@@ -1,11 +1,6 @@
 import { Alert, StyleSheet, Text } from "react-native";
 import React, { useState } from "react";
-import {
-  Commonbtn,
-  ImageComponent,
-  TouchableComponent,
-  Wrapper,
-} from "../utilities/Helpers";
+import { AppText, Commonbtn, GoogleBtn, LWrapper } from "../utilities/Helpers";
 import { InitialProps } from "../utilities/Props";
 import { colors, fonts, Gender, width } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
@@ -16,10 +11,15 @@ import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
 
-
-const Register:React.FC<InitialProps> = (props) => {
+const Register: React.FC<InitialProps> = (props) => {
+  const [show, setShow] = useState<boolean>(true);
   const [image, setImage] = useState<any>("");
   const [datepickermodal, setdatePickermodal] = useState<boolean>(false);
+  const [focus, setFocus] = useState<any>([
+    { key: 3, name: "name", status: false },
+    { key: 1, name: "email", status: false },
+    { key: 2, name: "password", status: false },
+  ]);
 
   const handleConfirm = (date: any) => {
     var today = new Date();
@@ -54,28 +54,27 @@ const Register:React.FC<InitialProps> = (props) => {
     },
   });
 
+  function DoFocus(value: any) {
+    focus.forEach((item: any) => {
+      if (item.name == value) {
+        item.status = true;
+      } else {
+        item.status = false;
+      }
+    });
+    setFocus([...focus]);
+  }
+
   return (
-    <Wrapper>
-      <Text style={styles.title}>Datify</Text>
-      <TouchableComponent style={styles.imageback}>
-        {image !== "" ? (
-          <ImageComponent
-            source={{ uri: image?.path }}
-            style={{ width: 25, height: 25 }}
-          />
-        ) : (
-          <ImageComponent
-            source={Images.user}
-            style={{ height: width / 3.5, width: width / 3.5 }}
-          />
-        )}
-        <ImageComponent source={Images.pencil} style={styles.pencil} />
-      </TouchableComponent>
+    <LWrapper value="Register">
+      <AppText>Register</AppText>
+      <AppText>Register now , Meet Singles 🫣</AppText>
       <CommonInput
+        onFocus={() => {
+          DoFocus("name");
+        }}
+        focus={focus[0].status}
         placeholder="Enter Display Name"
-        isicon="yes"
-        iconSource={Images.user}
-        iconstyle={{ width: 25, height: 25 }}
         value={formik.values.name}
         onChangeText={formik.handleChange("name")}
         onBlur={formik.handleBlur("name")}
@@ -84,6 +83,41 @@ const Register:React.FC<InitialProps> = (props) => {
         }
         errorspacing={formik.touched.name && formik.errors.name ? "yes" : "no"}
       />
+      <CommonInput
+        onFocus={() => {
+          DoFocus("email");
+        }}
+        focus={focus[1].status}
+        placeholder="Enter Email"
+        value={formik.values.name}
+        onChangeText={formik.handleChange("name")}
+        onBlur={formik.handleBlur("name")}
+        error={
+          formik.touched.name && formik.errors.name ? formik.errors.name : ""
+        }
+        errorspacing={formik.touched.name && formik.errors.name ? "yes" : "no"}
+      />
+      <CommonInput
+        onFocus={() => {
+          DoFocus("password");
+        }}
+        focus={focus[2].status}
+        placeholder="Enter Password"
+        value={formik.values.name}
+        onChangeText={formik.handleChange("name")}
+        onBlur={formik.handleBlur("name")}
+        error={
+          formik.touched.name && formik.errors.name ? formik.errors.name : ""
+        }
+        errorspacing={formik.touched.name && formik.errors.name ? "yes" : "no"}
+        eye="yes"
+        eyename={show ? "eye" : "eye-slash"}
+        secureTextEntry={show}
+        onPress={() => {
+          setShow(!show);
+        }}
+      />
+
       <CommonInputBtn
         value={
           formik.values.dob !== "" ? formik.values.dob : "Select Date of Birth"
@@ -133,14 +167,20 @@ const Register:React.FC<InitialProps> = (props) => {
         }
         label="label"
       />
-     
-      <Commonbtn 
-      title="Save"
-      onPress={()=>{
-        props.navigation.navigate('Home')
-      }}
-      //  onPress={formik.handleSubmit}
-        />
+
+      <Commonbtn
+        title="Continue"
+        onPress={() => {
+          props.navigation.navigate("Home");
+        }}
+        //  onPress={formik.handleSubmit}
+      />
+      <AppText style={styles.or}>OR</AppText>
+      <GoogleBtn
+        onPress={() => {
+          props.navigation.navigate("Register");
+        }}
+      />
       <DateTimePickerModal
         isVisible={datepickermodal}
         maximumDate={new Date()}
@@ -148,7 +188,7 @@ const Register:React.FC<InitialProps> = (props) => {
         onConfirm={handleConfirm}
         onCancel={() => setdatePickermodal(false)}
       />
-    </Wrapper>
+    </LWrapper>
   );
 };
 
@@ -181,5 +221,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -10,
     right: -6,
+  },
+  or: {
+    alignSelf: "center",
+    color: colors.main2,
+    fontWeight: "bold",
+    marginVertical: 10,
+    fontSize: 16,
   },
 });

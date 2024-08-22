@@ -7,8 +7,8 @@ export const colors = {
   white: "white",
   black: "black",
   red: "red",
-  main1: "#191716",
-  main2:   'black' //"#DADFF7",
+  main1: "white",
+  main2:   "#6A5ACD",
 };
 
 export const fonts = {
@@ -18,5 +18,5 @@ export const fonts = {
 export const Gender = [
   {key:1,label:'Male'},
   {key:2,label:'Female'},
-  {key:3,label:'Transgender'}
+  {key:3,label:'Other'}
 ]

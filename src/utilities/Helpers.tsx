@@ -5,15 +5,30 @@ import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal';
 import { AppTextProps, CommonbtnProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
 import { colors } from './constants';
+import { useNavigation } from '@react-navigation/native';
+import { Images } from './Images';
 
-export const Wrapper : React.FC<WrapperProps> = ({children}) => {
+export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
-   <SafeAreaView style={styles.container}>
-    <StatusBar backgroundColor={colors.main1}  barStyle={'light-content'}/>
-    <ScrollView>
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={colors.main1} barStyle={'light-content'} />
+      <ScrollView>
         {children}
-    </ScrollView>
-   </SafeAreaView>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+export const LWrapper: React.FC<WrapperProps> = ({ children, value }) => {
+  const navigate = useNavigation()
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={colors.main1} barStyle={'light-content'} />
+      <ScrollView>
+        {children}
+      </ScrollView>
+      {value === 'Login' ? <Text style={styles.lwtext1}>Don't have an Account ? <Text style={styles.lwtext2} onPress={() => { }}>Register</Text></Text> :
+        <Text style={styles.lwtext1}>Already have an Account ? <Text style={styles.lwtext2} onPress={() => { }}>Login</Text></Text>}
+    </SafeAreaView>
   )
 }
 
@@ -107,10 +122,20 @@ export const Commonbtn: React.FC<CommonbtnProps> = ({
 }) => {
   return (
     <TouchableComponent
-      style={{...styles.cbtn, opacity: opacity} as ViewStyle}
+      style={{ ...styles.cbtn, opacity: opacity } as ViewStyle}
       activeOpacity={1}
       onPress={onPress}>
       <AppText style={styles.cbtntxt}>{title}</AppText>
+    </TouchableComponent>
+  );
+};
+export const GoogleBtn: React.FC<CommonbtnProps> = ({
+  onPress,
+}) => {
+  return (
+    <TouchableComponent style={styles.btnview} onPress={onPress}>
+      <ImageComponent source={Images.google} style={styles.btnimage} />
+      <AppText style={styles.btntext}>Continue with Google</AppText>
     </TouchableComponent>
   );
 };
@@ -134,7 +159,7 @@ export const Loadingcomponent: React.FC = () => {
   );
 };
 
-export const SpaceComponent: React.FC = () =>{
-  return <View style={{marginVertical:10}} />;
+export const SpaceComponent: React.FC = () => {
+  return <View style={{ marginVertical: 10 }} />;
 }
 

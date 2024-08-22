@@ -1,13 +1,12 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
-import {ImageComponent, TouchableComponent} from './Helpers';
-import {CommonInputBtnProps, CommonInputProps} from './Props';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ImageComponent, TouchableComponent } from './Helpers';
+import { CommonInputBtnProps, CommonInputProps } from './Props';
 import { colors, width } from './constants';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 export const CommonInput: React.FC<CommonInputProps> = ({
   label,
-  iconSource,
-  isicon,
-  iconstyle,
+  focus,
   secureTextEntry,
   onChangeText,
   value,
@@ -26,8 +25,6 @@ export const CommonInput: React.FC<CommonInputProps> = ({
   onBlur,
   multi,
   textAlignVertical,
-  width,
-  placeholderTextColor,
   eye,
   eyename,
   eyestyle,
@@ -36,16 +33,8 @@ export const CommonInput: React.FC<CommonInputProps> = ({
   return (
     <View>
       {showlabel === 'yes' && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.textBoxBtnHolder}>
-        {isicon === 'yes' && (
-
-            <ImageComponent
-              source={iconSource}
-              style={iconstyle}
-              tintColor={colors.main2}
-            />
-
-        )}
+      <View style={{ ...styles.textBoxBtnHolder, borderWidth: focus ? 1.5 : 1 }}>
+        {focus && <Text style={{ position: 'absolute', top: -12, left: 20, backgroundColor: colors.main1, color: colors.main2, paddingHorizontal: 5, fontWeight: '500' }}>{placeholder}</Text>}
         <TextInput
           underlineColorAndroid="transparent"
           secureTextEntry={secureTextEntry}
@@ -53,14 +42,14 @@ export const CommonInput: React.FC<CommonInputProps> = ({
             styles.textBox,
             {
               paddingRight: lefticon === 'no' ? 10 : 10,
-              paddingLeft: lefticon === 'no' ? 58 : 10,
+              // paddingLeft: lefticon === 'no' ? 58 : 10,
               minHeight: multi === 'yes' ? 120 : 49,
               paddingVertical: multi === 'yes' ? 10 : 0,
             },
           ]}
           onChangeText={onChangeText}
           value={value}
-          placeholder={placeholder}
+          placeholder={focus ? '' : placeholder}
           keyboardType={keyboardType}
           maxLength={maxLength}
           returnKeyType={returnKeyType}
@@ -77,7 +66,8 @@ export const CommonInput: React.FC<CommonInputProps> = ({
             activeOpacity={0.8}
             style={styles.visibilityBtn}
             onPress={onPress}>
-            <ImageComponent source={eyename} style={eyestyle} />
+              <Icon name={eyename} size={25} color={colors.main2} />
+            {/* <ImageComponent source={eyename} style={eyestyle} /> */}
           </TouchableComponent>
         ) : null}
       </View>
@@ -85,8 +75,10 @@ export const CommonInput: React.FC<CommonInputProps> = ({
         style={{
           fontSize: 12,
           color: colors.red,
-          marginVertical: errorspacing === 'yes' ? 10 : 2,
-          left: 15,
+          marginVertical: errorspacing === 'yes' ? 12 : 5,
+          width:width/1.15,
+          alignSelf:'center',
+          fontWeight:'600'
         }}>
         {error}
       </Text>
@@ -109,7 +101,7 @@ export const CommonInputBtn: React.FC<CommonInputBtnProps> = ({
   return (
     <View>
       <TouchableComponent onPress={onPress} style={styles.textBoxBtnHolder}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
             resizeMode={'contain'}
             style={iconstyle}
@@ -158,14 +150,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 2,
     borderColor: colors.main2,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     borderWidth: 1,
-    height: 50,
+    height: 55,
     backgroundColor: colors.main1,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    width: width / 1.1,
+    width: width / 1.15,
     elevation: 5,
     paddingLeft: 15,
   },
@@ -174,7 +166,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: width / 1.35,
     left: 5,
-    color:colors.main2
+    color: colors.main2
   },
   visibilityBtn: {
     position: 'absolute',
