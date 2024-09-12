@@ -11,7 +11,7 @@ import { Images } from './Images';
 export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={colors.main1} barStyle={'light-content'} />
+      <StatusBar backgroundColor={colors.main1} barStyle={'dark-content'} />
       <ScrollView>
         {children}
       </ScrollView>

@@ -6,6 +6,8 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Home from '../screens/Home';
 import Loading from '../screens/Loading';
+import Inbox from '../screens/Inbox';
+import Tab from './Tab';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -17,7 +19,7 @@ const Stack = () => {
           <stack.Screen name="Loading" component={Loading} />
           <stack.Screen name="Login" component={Login} />
           <stack.Screen name="Register" component={Register} />
-          <stack.Screen name="Home" component={Home} />
+          <stack.Screen name="Home" component={Tab} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

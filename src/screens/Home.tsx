@@ -1,14 +1,13 @@
-import { FlatList, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { InitialProps } from "../utilities/Props";
-import { ImageComponent, TouchableImage, Wrapper } from "../utilities/Helpers";
+import { ImageComponent, Wrapper } from "../utilities/Helpers";
 import { profiles } from "../utilities/data";
-import { colors, width } from "../utilities/constants";
+import { colors, fonts, width } from "../utilities/constants";
 import { Images } from "../utilities/Images";
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Fontisto from "react-native-vector-icons/Fontisto";
 
-function RenderImages({images}:any) {
-
+function RenderImages({ images }: any) {
   if (images?.length == 1) {
     return (
       <ImageComponent
@@ -82,10 +81,33 @@ function renderProfiles({ item }: any) {
 const Home: React.FC<InitialProps> = (props) => {
   return (
     <Wrapper>
-      <View><Text>Datify</Text><Icon name={'comment-dots'} size={25} color={colors.main2} /></View>
+      <View style={styles.headerview}>
+        <Text style={styles.headertext}>Datify</Text>
+        <Fontisto
+          name={"filter"}
+          size={25}
+          color={colors.main2}
+          onPress={() => {}}
+        />
+      </View>
       <FlatList data={profiles} numColumns={3} renderItem={renderProfiles} />
     </Wrapper>
   );
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  headerview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    marginVertical: 10,
+    alignItems: "center",
+  },
+  headertext: {
+    fontFamily: fonts.playregular,
+    color: colors.main2,
+    fontSize: 18,
+  },
+});
