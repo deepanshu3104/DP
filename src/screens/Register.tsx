@@ -10,6 +10,9 @@ import { registerSchema } from "../utilities/Schema";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
+import { Cstyles } from "../utilities/Cstyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 
 const Register: React.FC<InitialProps> = (props) => {
   const [show, setShow] = useState<boolean>(true);
@@ -67,8 +70,11 @@ const Register: React.FC<InitialProps> = (props) => {
 
   return (
     <LWrapper value="Register">
-      <AppText>Register</AppText>
-      <AppText>Register now , Meet Singles 🫣</AppText>
+      <Ionicons name={"chevron-back"} size={35} color={colors.main2} onPress={()=>{
+    props.navigation.goBack()
+      }} />
+      <AppText style={styles.title1}>Register</AppText>
+      <AppText style={styles.title2}>Register now , Meet Singles 🫣</AppText>
       <CommonInput
         onFocus={() => {
           DoFocus("name");
@@ -228,5 +234,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     fontSize: 16,
+  },
+  title1: {
+    ...Cstyles.widthview,
+    fontSize: width / 18,
+    color:colors.main2,
+    fontWeight:'700',
+    marginBottom:5
+  },
+  title2: {
+    ...Cstyles.widthview,
+    fontSize: width / 28,
+    color:colors.main2,
+     fontWeight:'400',
+     marginBottom:15
   },
 });

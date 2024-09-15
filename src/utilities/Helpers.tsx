@@ -22,7 +22,7 @@ export const LWrapper: React.FC<WrapperProps> = ({ children, value }) => {
   const navigate = useNavigation()
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={colors.main1} barStyle={'light-content'} />
+      <StatusBar backgroundColor={colors.main1} barStyle={'dark-content'} />
       <ScrollView>
         {children}
       </ScrollView>

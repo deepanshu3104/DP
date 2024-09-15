@@ -7,52 +7,16 @@ import {
 } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
 import { profiles } from "../../utilities/data";
-import { colors, width } from "../../utilities/constants";
+import { colors } from "../../utilities/constants";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
+
 const Inbox: React.FC<InitialProps> = (props) => {
-  function renderItem({ item, index }: any) {
-    return (
-      <TouchableComponent
-        style={{
-          width: width / 1.05,
-          height: 80,
-          alignSelf: "center",
-          flexDirection:'row',
-          justifyContent:'space-evenly'
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "darkgrey",
-            width: 55,
-            height: 55,
-            borderRadius: 8,
-            alignItems:'center',
-            justifyContent:'center'
-          }}
-        >
-         <Fontisto
-          name={"person"}
-          size={45}
-          color={'grey'}
-        />
-        </View>
-        <View
-          style={{
-            width: width / 1.25,
-            height: 60,
-            alignSelf: "center",
-            borderBottomWidth:2
-          }}
-        ></View>
-      </TouchableComponent>
-    );
-  }
+
   return (
     <Wrapper>
-       <View style={styles.headerview}>
+      <View style={styles.headerview}>
         <Text style={styles.headertext}>Inbox</Text>
         <Fontisto
           name={"filter"}
@@ -67,3 +31,28 @@ const Inbox: React.FC<InitialProps> = (props) => {
 };
 
 export default Inbox;
+
+function renderItem({ item, index }: any) {
+  return (
+    <TouchableComponent style={styles.messageItem} onPress={()=>{
+    }}>
+      <View style={styles.messageImageView}>
+        <Fontisto name={"person"} size={45} color={"grey"} />
+      </View>
+      <View style={styles.messageTextView}>
+        <View style={styles.messageTextView2}>
+          <Text style={styles.messageName}>{item.name}</Text>
+          <Text numberOfLines={1} style={styles.lastMessage}>
+            {item.bio}
+          </Text>
+        </View>
+        <View style={styles.messageTextView3}>
+          <Text style={styles.messageTime}>23-06-2024</Text>
+         <View style={styles.unreadMsgView}>
+            <Text style={styles.unreadMsgText}>2</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableComponent>
+  );
+}
