@@ -1,7 +1,11 @@
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { InitialProps } from "../utilities/Props";
-import { ImageComponent, Wrapper } from "../utilities/Helpers";
+import {
+  ImageComponent,
+  TouchableComponent,
+  Wrapper,
+} from "../utilities/Helpers";
 import { profiles } from "../utilities/data";
 import { colors, fonts, width } from "../utilities/constants";
 import { Images } from "../utilities/Images";
@@ -61,24 +65,26 @@ function RenderImages({ images }: any) {
   }
 }
 
-function renderProfiles({ item }: any) {
-  return (
-    <View
-      style={{
-        width: width / 3,
-        minHeight: 100,
-        borderBottomWidth: 0.5,
-        borderRightWidth: 0.5,
-        borderColor: "grey",
-        alignItems: "center",
-      }}
-    >
-      <RenderImages images={item.images} />
-    </View>
-  );
-}
-
 const Home: React.FC<InitialProps> = (props) => {
+  function renderProfiles({ item }: any) {
+    return (
+      <TouchableComponent
+        onPress={() => {
+          props.navigation.navigate("OtherProfile");
+        }}
+        style={{
+          width: width / 3,
+          minHeight: 100,
+          borderBottomWidth: 0.5,
+          borderRightWidth: 0.5,
+          borderColor: "grey",
+          alignItems: "center",
+        }}
+      >
+        <RenderImages images={item.images} />
+      </TouchableComponent>
+    );
+  }
   return (
     <Wrapper>
       <View style={styles.headerview}>

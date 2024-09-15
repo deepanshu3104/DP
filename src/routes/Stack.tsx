@@ -8,6 +8,7 @@ import Loading from '../screens/Loading';
 import Inbox from '../screens/Inbox';
 import Tab from './Tab';
 import Chat from '../screens/Chat';
+import OtherProfile from '../screens/OtherProfile';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -21,6 +22,7 @@ const Stack = () => {
           <stack.Screen name="Register" component={Register} />
           <stack.Screen name="Home" component={Tab} />
           <stack.Screen name="Chat" component={Chat} />
+          <stack.Screen name="OtherProfile" component={OtherProfile} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
