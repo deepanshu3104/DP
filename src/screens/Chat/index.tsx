@@ -9,7 +9,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { TextInput } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Feather';
 
 const data = [
   {
@@ -65,20 +65,19 @@ const Chat: React.FC<InitialProps> = (props) => {
     <WrapperNoScroll>
       <ChatHeader data={routedData} onPress={() => { props.navigation.goBack() }} />
       <FlatList
-      style={{backgroundColor:'red'}}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item: Message, index: number) => index.toString()}
       />
-     <View style={styles.container}>
+     <View style={styles.inputContainer}>
       <TextInput
         style={styles.input}
         placeholder="Type a message..."
         value={''}
         onChangeText={()=>{}}
       />
-      <TouchableOpacity style={styles.button} onPress={()=>{}}>
-        <Icon name="send-circle" size={36} color="white" />
+      <TouchableOpacity style={styles.sendButton} onPress={()=>{}}>
+        <Icon name="send" size={25} color="white" />
       </TouchableOpacity>
     </View>
     </WrapperNoScroll>

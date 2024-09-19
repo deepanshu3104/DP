@@ -23,25 +23,28 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  container: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: '#ddd',
+    justifyContent:'space-evenly',
+    paddingVertical:10
   },
   input: {
     width:width/1.2,
     paddingHorizontal: 10,
-    paddingVertical: 8,
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: '#ddd',
-    marginRight: 10,
     fontSize: 16,
   },
-  button: {
+  sendButton: {
     backgroundColor: colors.main2,
     borderRadius: 100,
+    width:40,height:40,
+    alignItems:'center',
+    justifyContent:'center'
   },
 });

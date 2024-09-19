@@ -25,7 +25,7 @@ const Home: React.FC<InitialProps> = (props) => {
           minHeight: 100,
           borderBottomWidth: 0.5,
           borderRightWidth: 0.5,
-          borderColor: "grey",
+
           alignItems: "center",
         }}
       >
@@ -34,7 +34,7 @@ const Home: React.FC<InitialProps> = (props) => {
             <ImageComponent source={{ uri: item?.images?.[0] }} style={{
               width: width/3,
               height:width/3,
-              borderRadius: 8,
+              // borderRadius: 8,
             }} />
           </View>
           :
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "darkgrey",
     width: width/3,
     height:150,
-    borderRadius: 8,
+    // borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
