@@ -14,11 +14,10 @@ const routes = [
   { key: "third", title: "Profile", icon: "home" },
 ];
 
-const Tab: React.FC = () => {
+const Tab: React.FC<any>= (props) => {
   const [index, setIndex] = React.useState(0);
 
   function renderTabBar(props: any) {
-    console.log(JSON.stringify(props.navigationState.routes));
     return (
       <View
         style={{
@@ -40,7 +39,7 @@ const Tab: React.FC = () => {
               <Fontisto
                 name={route.icon}
                 size={25}
-                color={index == i ? "white":"grey"}
+                color={index == i ? "white" : "grey"}
               />
             </TouchableComponent>
           );
@@ -48,6 +47,12 @@ const Tab: React.FC = () => {
       </View>
     );
   }
+
+  const renderScene:any = SceneMap({
+    first:()=> Home(props),
+    second:() =>Inbox(props),
+    third: ()=>Profile(props),
+  });
   return (
     <TabView
       tabBarPosition="bottom"

@@ -12,8 +12,8 @@ import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
 
-const Inbox: React.FC<InitialProps> = (props) => {
 
+const Inbox: React.FC<InitialProps> = (props) => {
   return (
     <Wrapper>
       <View style={styles.headerview}>
@@ -22,20 +22,32 @@ const Inbox: React.FC<InitialProps> = (props) => {
           name={"filter"}
           size={25}
           color={colors.main2}
-          onPress={() => {}}
+          onPress={() => {
+          }}
         />
       </View>
-      <FlatList data={profiles} renderItem={renderItem} />
+      <FlatList
+        data={profiles}
+        renderItem={({ item, index }) => <RenderItem item={item} index={index} onPress={() => {
+          props.navigation.navigate('Chat',{data:item});
+        }} />}
+        keyExtractor={(item: any, index: number) => index.toString()}
+      />
     </Wrapper>
   );
 };
 
 export default Inbox;
 
-function renderItem({ item, index }: any) {
+interface RenderItemProps {
+  item: any;
+  index: number;
+  onPress: () => void;
+}
+
+function RenderItem({ item, index, onPress }: RenderItemProps) {
   return (
-    <TouchableComponent style={styles.messageItem} onPress={()=>{
-    }}>
+    <TouchableComponent style={styles.messageItem} onPress={onPress}>
       <View style={styles.messageImageView}>
         <Fontisto name={"person"} size={45} color={"grey"} />
       </View>
@@ -48,7 +60,7 @@ function renderItem({ item, index }: any) {
         </View>
         <View style={styles.messageTextView3}>
           <Text style={styles.messageTime}>23-06-2024</Text>
-         <View style={styles.unreadMsgView}>
+          <View style={styles.unreadMsgView}>
             <Text style={styles.unreadMsgText}>2</Text>
           </View>
         </View>

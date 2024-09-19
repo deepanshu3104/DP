@@ -12,9 +12,17 @@ export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.main1} barStyle={'dark-content'} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
+    </SafeAreaView>
+  )
+}
+export const WrapperNoScroll: React.FC<WrapperProps> = ({ children }) => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={colors.main1} barStyle={'dark-content'} />
+        {children}
     </SafeAreaView>
   )
 }

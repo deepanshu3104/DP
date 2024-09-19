@@ -11,59 +11,7 @@ import { colors, fonts, width } from "../utilities/constants";
 import { Images } from "../utilities/Images";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
-function RenderImages({ images }: any) {
-  if (images?.length == 1) {
-    return (
-      <ImageComponent
-        source={{ uri: images[0] }}
-        style={{
-          width: 80,
-          height: 80,
-          borderRadius: 8,
-          position: "absolute",
-          borderWidth: 2,
-          borderColor: "black",
-        }}
-      />
-    );
-  } else if (images?.length > 1) {
-    return (
-      <View>
-        <View
-          style={{
-            width: 80,
-            height: 80,
-            backgroundColor: "black",
-            borderWidth: 2,
-            borderColor: "#DADFF7",
-            borderRadius: 8,
-            bottom: -7,
-            left: -7,
-            transform: [{ rotate: "15deg" }],
-          }}
-        />
-        <ImageComponent
-          source={{ uri: images[0] }}
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: 8,
-            position: "absolute",
-            borderWidth: 2,
-            borderColor: "black",
-          }}
-        />
-      </View>
-    );
-  } else {
-    return (
-      <ImageComponent
-        source={Images.user}
-        style={{ height: width / 3.5, width: width / 3.5 }}
-      />
-    );
-  }
-}
+
 
 const Home: React.FC<InitialProps> = (props) => {
   function renderProfiles({ item }: any) {
@@ -81,7 +29,18 @@ const Home: React.FC<InitialProps> = (props) => {
           alignItems: "center",
         }}
       >
-        <RenderImages images={item.images} />
+         {item?.images?.length !== 0 ?
+          <View style={styles.messageImageView}>
+            <ImageComponent source={{ uri: item?.images?.[0] }} style={{
+              width: width/3,
+              height:width/3,
+              borderRadius: 8,
+            }} />
+          </View>
+          :
+          <View style={styles.messageImageView}>
+            <Fontisto name={"person"} size={25} color={"grey"} />
+          </View>}
       </TouchableComponent>
     );
   }
@@ -116,4 +75,68 @@ const styles = StyleSheet.create({
     color: colors.main2,
     fontSize: 18,
   },
+  messageImageView: {
+    backgroundColor: "darkgrey",
+    width: width/3,
+    height:150,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
+
+
+
+// function RenderImages({ images }: any) {
+//   if (images?.length == 1) {
+//     return (
+//       <ImageComponent
+//         source={{ uri: images[0] }}
+//         style={{
+//           width: 80,
+//           height: 80,
+//           borderRadius: 8,
+//           position: "absolute",
+//           borderWidth: 2,
+//           borderColor: "black",
+//         }}
+//       />
+//     );
+//   } else if (images?.length > 1) {
+//     return (
+//       <View>
+//         <View
+//           style={{
+//             width: 80,
+//             height: 80,
+//             backgroundColor: "black",
+//             borderWidth: 2,
+//             borderColor: "#DADFF7",
+//             borderRadius: 8,
+//             bottom: -7,
+//             left: -7,
+//             transform: [{ rotate: "15deg" }],
+//           }}
+//         />
+//         <ImageComponent
+//           source={{ uri: images[0] }}
+//           style={{
+//             width: 80,
+//             height: 80,
+//             borderRadius: 8,
+//             position: "absolute",
+//             borderWidth: 2,
+//             borderColor: "black",
+//           }}
+//         />
+//       </View>
+//     );
+//   } else {
+//     return (
+//       <ImageComponent
+//         source={Images.user}
+//         style={{ height: width / 3.5, width: width / 3.5 }}
+//       />
+//     );
+//   }
+// }
