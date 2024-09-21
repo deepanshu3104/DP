@@ -1,4 +1,4 @@
-import { Alert, FlatList, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import React from "react";
 import { InitialProps } from "../../utilities/Props";
 import {
@@ -7,38 +7,30 @@ import {
   Wrapper,
 } from "../../utilities/Helpers";
 import { profiles } from "../../utilities/data";
-import { colors, fonts, width } from "../../utilities/constants";
-
+import { colors, width } from "../../utilities/constants";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import { styles } from "./style";
-
-
 
 const Home: React.FC<InitialProps> = (props) => {
   function renderProfiles({ item }: any) {
     return (
       <TouchableComponent
         onPress={() => {
-          props.navigation.navigate("OtherProfile",{data:item});
+          props.navigation.navigate("OtherProfile", { data: item });
         }}
-        style={{
-          width: width / 3,
-          height:width/3,
-          alignItems: "center",
-          justifyContent:'center',
-          borderWidth:1
-        }}
+        style={styles.cardView}
       >
-         {item?.images?.length !== 0 ?
-          <View style={styles.messageImageView}>
-            <ImageComponent source={{ uri: item?.images?.[0] }} style={{
-             ...styles.cardCommon
-            }} />
-          </View>
-          :
-          <View style={{...styles.cardCommon,...styles.messageImageView}}>
-            <Fontisto name={"person"} size={25} color={"grey"} />
-          </View>}
+        <View style={{ ...styles.cardCommon, ...styles.messageImageView }}>
+          {item?.images?.length !== 0 ? (
+            <ImageComponent
+              source={{ uri: item?.images?.[0] }}
+              style={styles.cardCommon}
+            />
+          ) : (
+            <Fontisto name={"person"} size={width / 5} color={"grey"} />
+          )}
+        </View>
+        {/* <Fontisto name={"star"} size={20} color={'#FFD700'}  style={{position:'absolute',top:5,right:5}}/> */}
       </TouchableComponent>
     );
   }
@@ -59,4 +51,3 @@ const Home: React.FC<InitialProps> = (props) => {
 };
 
 export default Home;
-

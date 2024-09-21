@@ -11,8 +11,6 @@ import { colors } from "../../utilities/constants";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
-
-
 const Inbox: React.FC<InitialProps> = (props) => {
   return (
     <Wrapper>
@@ -22,15 +20,20 @@ const Inbox: React.FC<InitialProps> = (props) => {
           name={"filter"}
           size={25}
           color={colors.main2}
-          onPress={() => {
-          }}
+          onPress={() => {}}
         />
       </View>
       <FlatList
         data={profiles}
-        renderItem={({ item, index }) => <RenderItem item={item} index={index} onPress={() => {
-          props.navigation.navigate('Chat',{data:item});
-        }} />}
+        renderItem={({ item, index }) => (
+          <RenderItem
+            item={item}
+            index={index}
+            onPress={() => {
+              props.navigation.navigate("Chat", { data: item });
+            }}
+          />
+        )}
         keyExtractor={(item: any, index: number) => index.toString()}
       />
     </Wrapper>

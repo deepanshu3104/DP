@@ -15,9 +15,16 @@ export const styles = StyleSheet.create({
       color: colors.main2,
       fontSize: 18,
     },
-    cardCommon:{
+    cardView:{
         width: width/3,
         height:width/3,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    cardCommon:{
+        width: width/3.05,
+        height:width/3.05,
+        borderRadius:4,
     },
     messageImageView: {
       backgroundColor: "darkgrey",
