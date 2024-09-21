@@ -1,12 +1,12 @@
 import React from "react";
 import { TabView, SceneMap } from "react-native-tab-view";
-import Home from "../screens/Home";
 import { colors, width } from "../utilities/constants";
 import Inbox from "../screens/Inbox";
 import { Text, View } from "react-native";
 import { TouchableComponent } from "../utilities/Helpers";
 import Profile from "../screens/Profile";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import Home from "../screens/Home";
 
 const routes = [
   { key: "first", title: "Home", icon: "home" },

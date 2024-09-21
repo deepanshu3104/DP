@@ -23,6 +23,8 @@ export const profiles = [
     images: [
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-hQOisFkWrGMUwJC3iFRtvfKPe5suTSXBj4k90QAPH6lptksKTaTSQPNpALgsUTu0ITg&usqp=CAU",
       "https://www.hollywoodreporter.com/wp-content/uploads/2011/05/chopard_gallery_2-2011-a-p.jpg?w=1440&h=810&crop=1",
+      "https://static.toiimg.com/photo/96227403/96227403.jpg?v=3",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNIlvyVPvTu2wakRAqDYbvT7Yx_okTXa4q4Q&s"
     ]
   },
   {

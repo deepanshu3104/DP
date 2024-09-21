@@ -1,6 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
-import { ImageComponent, Wrapper, WrapperNoScroll } from "../../utilities/Helpers";
+import { ImageComponent, TouchableComponent, Wrapper, WrapperNoScroll } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
 import { styles } from "./style";
 import { colors, width } from "../../utilities/constants";
@@ -76,9 +76,9 @@ const Chat: React.FC<InitialProps> = (props) => {
         value={''}
         onChangeText={()=>{}}
       />
-      <TouchableOpacity style={styles.sendButton} onPress={()=>{}}>
+      <TouchableComponent style={styles.sendButton} onPress={()=>{}}>
         <Icon name="send" size={25} color="white" />
-      </TouchableOpacity>
+      </TouchableComponent>
     </View>
     </WrapperNoScroll>
   );
