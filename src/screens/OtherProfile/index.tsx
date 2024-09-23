@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   AppText,
   Commonbtn,
@@ -15,10 +15,11 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import { Cstyles } from "../../utilities/Cstyles";
+import ConfirmModal from "../../modals/ConfirmModal";
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
   const data = props.route.params.data;
-
+  const [blockModal, setBlockModal] = useState(false);
   return (
     <WrapperNoScroll>
       <View style={{ ...styles.headerSView, ...styles.headerView1 }}>
@@ -35,7 +36,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             name={"block-helper"}
             size={25}
             color={colors.main2}
-            onPress={() => {}}
+            onPress={() => {setBlockModal(true)}}
           />
           <Icon
             name={"star-outline"}
@@ -52,7 +53,12 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           {data.images.length !== 0 ? (
             <SwiperFlatList
               showPagination
-              paginationStyle={{ backgroundColor: "red" }}
+              paginationStyle={{
+                backgroundColor: colors.main2,
+                borderRadius: 8,
+                alignItems: "center",
+              }}
+              paginationStyleItem={{ height: 10, width: 10 }}
               data={data?.images}
               renderItem={({ item }) => (
                 <ImageComponent
@@ -83,6 +89,13 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       </ScrollView>
       <Commonbtn title="I Like You  ❤️" onPress={() => {}} />
       <SpaceComponent />
+      <ConfirmModal
+        isVisible={blockModal}
+        name={data?.name}
+        onBackdropPress={() => {
+          setBlockModal(false);
+        }}
+      />
     </WrapperNoScroll>
   );
 };

@@ -13,7 +13,7 @@ export const profiles = [
   },
   {
     id: 2,
-    name: 'Marcus Wong',
+    name: 'Aishwarya Rai',
     age: 34,
     occupation: 'Software Developer',
     location: 'San Francisco, CA',
@@ -21,10 +21,10 @@ export const profiles = [
     interests: ['Coding', 'Video games', 'Cycling'],
     bio: 'Enthusiastic coder who enjoys solving complex problems and is an avid gamer. Always on the lookout for new tech innovations.',
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-hQOisFkWrGMUwJC3iFRtvfKPe5suTSXBj4k90QAPH6lptksKTaTSQPNpALgsUTu0ITg&usqp=CAU",
+      "https://cdn.britannica.com/75/124975-050-32A8692C/Aishwarya-Bachchan-Rai.jpg",
       "https://www.hollywoodreporter.com/wp-content/uploads/2011/05/chopard_gallery_2-2011-a-p.jpg?w=1440&h=810&crop=1",
       "https://static.toiimg.com/photo/96227403/96227403.jpg?v=3",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNIlvyVPvTu2wakRAqDYbvT7Yx_okTXa4q4Q&s"
+      "https://m.media-amazon.com/images/M/MV5BNmZmOWVmOTAtZTE3OS00OTBlLTg3M2EtYWRlNDI0NzI5OWY3XkEyXkFqcGdeQXVyNDI3NjU1NzQ@._V1_.jpg"
     ]
   },
   {
@@ -36,8 +36,7 @@ export const profiles = [
     education: 'MBA from University of Chicago',
     interests: ['Social media', 'Cooking', 'Travel'],
     bio: 'Focused on creating impactful marketing campaigns. Loves experimenting with new recipes and exploring different cultures.',
-    images: [
-    ]
+    images: []
   },
   {
     id: 4,
@@ -48,8 +47,7 @@ export const profiles = [
     education: 'CFA, BA in Economics from Harvard',
     interests: ['Investing', 'Golf', 'Classical music'],
     bio: 'Dedicated to financial planning and analysis. Enjoys a round of golf and attending live concerts.',
-    images: [
-    ]
+    images: []
   },
   {
     id: 5,
