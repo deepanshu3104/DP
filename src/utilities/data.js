@@ -40,7 +40,7 @@ export const profiles = [
   },
   {
     id: 4,
-    name: 'Michael Robinson',
+    name: 'Michael Robins',
     age: 45,
     occupation: 'Financial Analyst',
     location: 'Boston, MA',
