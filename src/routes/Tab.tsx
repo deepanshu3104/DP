@@ -7,14 +7,16 @@ import { TouchableComponent } from "../utilities/Helpers";
 import Profile from "../screens/Profile";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Home from "../screens/Home";
+import Explore from "../screens/Explore";
 
 const routes = [
   { key: "first", title: "Home", icon: "home" },
-  { key: "second", title: "Inbox", icon: "hipchat" },
-  { key: "third", title: "Profile", icon: "home" },
+  { key: "second", title: "Explore", icon: "world" },
+  { key: "third", title: "Inbox", icon: "hipchat" },
+  { key: "fourth", title: "Profile", icon: "home" },
 ];
 
-const Tab: React.FC<any>= (props) => {
+const Tab: React.FC<any> = (props) => {
   const [index, setIndex] = React.useState(0);
 
   function renderTabBar(props: any) {
@@ -48,10 +50,11 @@ const Tab: React.FC<any>= (props) => {
     );
   }
 
-  const renderScene:any = SceneMap({
-    first:()=> Home(props),
-    second:() =>Inbox(props),
-    third: ()=>Profile(props),
+  const renderScene: any = SceneMap({
+    first: () => Home(props),
+    second: () => Explore(props),
+    third: () => Inbox(props),
+    fourth: () => Profile(props),
   });
   return (
     <TabView
@@ -66,9 +69,3 @@ const Tab: React.FC<any>= (props) => {
 };
 
 export default Tab;
-
-const renderScene = SceneMap({
-  first: Home,
-  second: Inbox,
-  third: Profile,
-});

@@ -10,6 +10,7 @@ import { profiles } from "../../utilities/data";
 import { colors } from "../../utilities/constants";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import ChatFilter from "../../modals/ChatFilter";
 
 const Inbox: React.FC<InitialProps> = (props) => {
   return (
@@ -36,6 +37,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
         )}
         keyExtractor={(item: any, index: number) => index.toString()}
       />
+      <ChatFilter isVisible={true} />
     </Wrapper>
   );
 };

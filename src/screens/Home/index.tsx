@@ -5,6 +5,7 @@ import {
   AppText,
   ImageComponent,
   TouchableComponent,
+  TouchableImage,
   Wrapper,
 } from "../../utilities/Helpers";
 import { profiles } from "../../utilities/data";
