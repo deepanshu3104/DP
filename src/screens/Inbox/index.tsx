@@ -1,5 +1,5 @@
-import { FlatList, Text, View } from "react-native";
-import React from "react";
+import { Alert, FlatList, Text, View } from "react-native";
+import React, { useState } from "react";
 import {
   ImageComponent,
   TouchableComponent,
@@ -13,6 +13,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import ChatFilter from "../../modals/ChatFilter";
 
 const Inbox: React.FC<InitialProps> = (props) => {
+  const [filterModal, setFilterModal] = useState(false);
   return (
     <Wrapper>
       <View style={styles.headerview}>
@@ -21,7 +22,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
           name={"filter"}
           size={25}
           color={colors.main2}
-          onPress={() => {}}
+          onPress={() => { setFilterModal(true) }}
         />
       </View>
       <FlatList
@@ -37,7 +38,9 @@ const Inbox: React.FC<InitialProps> = (props) => {
         )}
         keyExtractor={(item: any, index: number) => index.toString()}
       />
-      <ChatFilter isVisible={true} />
+      <ChatFilter isVisible={filterModal} onBackdropPress={() => setFilterModal(false)} onModalHide={() => {
+        // Alert.alert('hiii')
+      }} />
     </Wrapper>
   );
 };

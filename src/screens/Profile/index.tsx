@@ -10,8 +10,11 @@ import {
 import { colors, height, width } from "../../utilities/constants";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import ConfirmModal from "../../modals/ConfirmModal";
 
 const Profile: React.FC<InitialProps> = () => {
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [data, setData] = useState<any>({
     id: 2,
     name: "Aishwarya Rai",
@@ -28,14 +31,7 @@ const Profile: React.FC<InitialProps> = () => {
     ],
   });
 
-  function RenderItem({ item, index }: any) {
-    return (
-      <TouchableComponent style={{flexDirection:'row',borderBottomWidth:0.5,alignItems:'center',paddingVertical:10}}>
-          <MaterialIcons name={item.icon} size={30} color={colors.main2} style={{marginHorizontal:10}}/>
-        <AppText>{item.title}</AppText>
-      </TouchableComponent>
-    );
-  }
+
   return (
     <Wrapper>
       <View
@@ -78,7 +74,26 @@ const Profile: React.FC<InitialProps> = () => {
           {data?.name}
         </AppText>
       </View>
-      <FlatList data={options}  keyExtractor={(item: any, index: number) => index.toString()} renderItem={RenderItem} />
+      <Card index={0} onPress={() => { }} />
+      <Card index={1} onPress={() => { }} />
+      <Card index={2} onPress={() => { }} />
+      <Card index={3} onPress={() => { setLogoutModal(true) }} />
+      <Card index={4} onPress={() => { setDeleteModal(true) }} />
+      <ConfirmModal
+        isVisible={logoutModal}
+        title={'Are You sure you want to Logout ?'}
+
+        onBackdropPress={() => {
+          setLogoutModal(false);
+        }}
+      />
+      <ConfirmModal
+        isVisible={deleteModal}
+        title={'Are You sure you want to Delete this Account ?'}
+        onBackdropPress={() => {
+          setDeleteModal(false);
+        }}
+      />
     </Wrapper>
   );
 };
@@ -86,9 +101,18 @@ const Profile: React.FC<InitialProps> = () => {
 export default Profile;
 
 const options = [
-  { key: 1, title: "My Favourites" ,icon:'favorite'},
-  { key: 2, title: "Blocked List" ,icon:'block'},
-  { key: 3, title: "Share with Friends" ,icon:'share'},
-  { key: 4, title: "Logout",icon:'logout'},
-  { key: 5, title: "Delete Account" ,icon:'delete'},
+  { key: 1, title: "My Favourites", icon: 'favorite' },
+  { key: 2, title: "Blocked List", icon: 'block' },
+  { key: 3, title: "Share with Friends", icon: 'share' },
+  { key: 4, title: "Logout", icon: 'logout' },
+  { key: 5, title: "Delete Account", icon: 'delete' },
 ];
+
+function Card({ index, onPress }: any) {
+  return (
+    <TouchableComponent onPress={onPress} style={{ flexDirection: 'row', borderBottomWidth: 0.5, alignItems: 'center', paddingVertical: 10 }}>
+      <MaterialIcons name={options[index]?.icon} size={30} color={colors.main2} style={{ marginHorizontal: 10 }} />
+      <AppText>{options[index]?.title}</AppText>
+    </TouchableComponent>
+  )
+}

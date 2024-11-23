@@ -8,7 +8,7 @@ import {
 } from "../utilities/Helpers";
 import { colors, width } from "../utilities/constants";
 
-const ConfirmModal = ({ isVisible, name, onBackdropPress }: any) => {
+const ConfirmModal = ({ isVisible, title, onBackdropPress }: any) => {
   return (
     <Modal
       animationIn={"slideInLeft"}
@@ -35,7 +35,7 @@ const ConfirmModal = ({ isVisible, name, onBackdropPress }: any) => {
             color: "black",
           }}
         >
-          Are You sure you want to Block {name} ?
+          {title}
         </AppText>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <TouchableText

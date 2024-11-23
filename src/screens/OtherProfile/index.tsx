@@ -91,7 +91,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       <SpaceComponent />
       <ConfirmModal
         isVisible={blockModal}
-        name={data?.name}
+        title={`Are You sure you want to Block ${data?.name} ?`}
         onBackdropPress={() => {
           setBlockModal(false);
         }}

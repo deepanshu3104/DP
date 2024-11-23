@@ -17,9 +17,9 @@ const Stack = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <stack.Navigator screenOptions={{headerShown: false}}>
-          {/* <stack.Screen name="Loading" component={Loading} />
+          <stack.Screen name="Loading" component={Loading} />
           <stack.Screen name="Login" component={Login} />
-          <stack.Screen name="Register" component={Register} /> */}
+          <stack.Screen name="Register" component={Register} />
           <stack.Screen name="Home" component={Tab} />
           <stack.Screen name="Chat" component={Chat} />
           <stack.Screen name="OtherProfile" component={OtherProfile} />

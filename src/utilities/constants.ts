@@ -9,6 +9,8 @@ export const colors = {
   red: "red",
   main1: "white",
   main2:   "#6A5ACD",
+  // main1:"#454545",
+  // main2: "black"  
 };
 
 export const fonts = {
