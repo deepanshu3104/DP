@@ -12,7 +12,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ConfirmModal from "../../modals/ConfirmModal";
 
-const Profile: React.FC<InitialProps> = () => {
+const Profile: React.FC<InitialProps> = (props) => {
   const [logoutModal, setLogoutModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [data, setData] = useState<any>({
@@ -74,9 +74,9 @@ const Profile: React.FC<InitialProps> = () => {
           {data?.name}
         </AppText>
       </View>
-      <Card index={0} onPress={() => { }} />
-      <Card index={1} onPress={() => { }} />
-      <Card index={2} onPress={() => { }} />
+      <Card index={0} onPress={() => {props.navigation.navigate('Favourites') }} />
+      <Card index={1} onPress={() => { props.navigation.navigate('Blocked')}} />
+      {/* <Card index={2} onPress={() => { }} /> */}
       <Card index={3} onPress={() => { setLogoutModal(true) }} />
       <Card index={4} onPress={() => { setDeleteModal(true) }} />
       <ConfirmModal

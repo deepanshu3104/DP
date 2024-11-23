@@ -9,6 +9,8 @@ import Inbox from '../screens/Inbox';
 import Tab from './Tab';
 import Chat from '../screens/Chat';
 import OtherProfile from '../screens/OtherProfile';
+import Blocked from '../screens/Blocked';
+import Favourites from '../screens/Favourites';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -23,6 +25,8 @@ const Stack = () => {
           <stack.Screen name="Home" component={Tab} />
           <stack.Screen name="Chat" component={Chat} />
           <stack.Screen name="OtherProfile" component={OtherProfile} />
+          <stack.Screen name="Blocked" component={Blocked} />
+          <stack.Screen name="Favourites" component={Favourites} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
