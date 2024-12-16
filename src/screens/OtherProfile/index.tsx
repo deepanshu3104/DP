@@ -51,33 +51,53 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
     setAge(years)
   };
 
-    const fetchProducts = async () => {
-      try {
-        const querySnapshot = await firestore().collection('Users').get();
-  
-        let dataa : any = [];
-        querySnapshot.forEach(documentSnapshot => {
-          dataa.push({
-            id: documentSnapshot.id,
-            ...documentSnapshot.data(),
-          });
+  const fetchProducts = async () => {
+    try {
+      const querySnapshot = await firestore().collection('Users').get();
+
+      let dataa: any = [];
+      querySnapshot.forEach(documentSnapshot => {
+        dataa.push({
+          id: documentSnapshot.id,
+          ...documentSnapshot.data(),
         });
+      });
+      const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
+      await firstUserRef.update({
+        blocked: [...dataa[0].blocked, data.id]
+      });
 
-      
+      console.log('done');
+      setBlockModal(false)
+      props.navigation.navigate('Home')
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  const fav = async () => {
+    try {
+      const querySnapshot = await firestore().collection('Users').get();
 
-        const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
-        await firstUserRef.update({
-          blocked:  [...dataa[0].blocked,data.id]
+      let dataa: any = [];
+      querySnapshot.forEach(documentSnapshot => {
+        dataa.push({
+          id: documentSnapshot.id,
+          ...documentSnapshot.data(),
         });
+      });
+      const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
+      await firstUserRef.update({
+        favourite: [...dataa[0].favourite, data.id]
+      });
 
-        console.log('done');
-        setBlockModal(false)
-        props.navigation.navigate('Home')
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-  
+      console.log('done');
+      setBlockModal(false)
+      Alert.alert("added")
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
 
 
   return (
@@ -103,7 +123,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             size={35}
             color={colors.main2}
             onPress={() => {
-              props.navigation.goBack();
+              fav()
             }}
           />
         </View>
@@ -184,7 +204,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         onBackdropPress={() => {
           setBlockModal(false);
         }}
-        onPress={()=>fetchProducts()}
+        onPress={() => fetchProducts()}
       />
     </WrapperNoScroll>
   );

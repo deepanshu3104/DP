@@ -35,7 +35,7 @@ const Home: React.FC<InitialProps> = (props) => {
             <Fontisto name={"person"} size={width / 5} color={"grey"} />
           )}
         </View>
-        {/* <MaterialIcons name={"star"} size={20} color={'#FFD700'}  style={{position:'absolute',top:5,right:5}}/> */}
+        <MaterialIcons name={"star"} size={20} color={'#FFD700'}  style={{position:'absolute',top:5,right:5}}/>
         <View style={{flexDirection:'row',position:'absolute',alignItems:'center',bottom:5, width: width/3.05,justifyContent:'space-evenly'}}>
         <MaterialIcons name={"circle"} size={15} color={'green'}  style={{}}/>
         <AppText style={{width:width/3.8,color:'black',fontWeight:'600'}}>{item.name}</AppText>

@@ -11,12 +11,12 @@ const Blocked: React.FC<InitialProps> = (props) => {
   const fetchProducts = async () => {
     try {
       const querySnapshot = await firestore().collection("Users").get();
-  
+
       let data: any = [];
       for (const documentSnapshot of querySnapshot.docs) {
         const userData = documentSnapshot.data();
         const blockedUserIds = userData.blocked || [];
-  
+
         // Fetch names of blocked users
         const blockedUsers: any = [];
         for (const blockedUserId of blockedUserIds) {
@@ -29,7 +29,7 @@ const Blocked: React.FC<InitialProps> = (props) => {
             blockedUsers.push(blockedUserData?.name || "Unknown User");
           }
         }
-  
+
         // Add the user with replaced blocked data
         data.push({
           id: documentSnapshot.id,
@@ -37,13 +37,13 @@ const Blocked: React.FC<InitialProps> = (props) => {
           blocked: blockedUsers, // Replace IDs with names
         });
       }
-  
+
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchProducts();
   }, []);
