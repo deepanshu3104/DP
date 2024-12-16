@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "206703204938",
-    "project_id": "dp-dp-7b320",
-    "storage_bucket": "dp-dp-7b320.appspot.com"
+    "project_number": "308618151618",
+    "project_id": "dpdating-21b1d",
+    "storage_bucket": "dpdating-21b1d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:206703204938:android:e19f452ea6d8f30499e4b3",
+        "mobilesdk_app_id": "1:308618151618:android:cce4c97c3d9eee378c5d5b",
         "android_client_info": {
           "package_name": "com.dp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "206703204938-8vhi9t9hqbf5ouhj8krjqhtie5fsn5en.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCCkyYgT0DptcfJeIXNI0PfD9X5yQlMPW4"
+          "current_key": "AIzaSyBZs2FREDGKE6zRobUCi8l-fIRgTJai2eA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "206703204938-8vhi9t9hqbf5ouhj8krjqhtie5fsn5en.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

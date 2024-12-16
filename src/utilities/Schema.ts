@@ -24,6 +24,18 @@ export const registerSchema = yup.object().shape({
     .string()
     .required('Please select your Gender')
     .trim('Please select your Gender'),
-
+  showme: yup
+    .string()
+    .required('Please select your Showme')
+    .trim('Please select your Showme'),
+  email: yup
+    .string()
+    .required('Please enter your Email or Phone number')
+    .trim('Please enter your Email or Phone number'),
+  password: yup
+    .string()
+    .required('Please enter your Password')
+    .trim('Please enter your Password')
+    .min(6,"Password must contain atleast 6 chsracters")
 
 });

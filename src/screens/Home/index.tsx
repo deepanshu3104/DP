@@ -1,5 +1,5 @@
 import { FlatList, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { InitialProps } from "../../utilities/Props";
 import {
   AppText,
@@ -13,6 +13,7 @@ import { colors, width } from "../../utilities/constants";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { styles } from "./style";
+import firestore from '@react-native-firebase/firestore';
 
 const Home: React.FC<InitialProps> = (props) => {
 
@@ -42,6 +43,33 @@ const Home: React.FC<InitialProps> = (props) => {
       </TouchableComponent>
     );
   }
+
+
+  const [products, setProducts] = useState([]);
+  const fetchProducts = async () => {
+    try {
+      const querySnapshot = await firestore().collection('Users').get();
+      // console.log('Total products: ', querySnapshot.size);
+
+      let data : any = [];
+      querySnapshot.forEach(documentSnapshot => {
+        data.push({
+          id: documentSnapshot.id,
+          ...documentSnapshot.data(),
+        });
+      });
+
+      setProducts(data);
+      console.log('Fetched products:', data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  useEffect(() => {
+
+
+    fetchProducts();
+  }, []);
   return (
     <Wrapper>
       <View style={styles.headerview}>
@@ -53,7 +81,7 @@ const Home: React.FC<InitialProps> = (props) => {
           onPress={() => {}}
         />
       </View>
-      <FlatList data={profiles} numColumns={3} renderItem={renderProfiles} />
+      <FlatList data={products} numColumns={3} renderItem={renderProfiles} />
     </Wrapper>
   );
 };

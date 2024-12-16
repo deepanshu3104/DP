@@ -5,6 +5,7 @@ import {
   Commonbtn,
   GoogleBtn,
   ImageComponent,
+  Loadingcomponent,
   LWrapper,
   SpaceComponent,
   TouchableComponent,
@@ -15,10 +16,13 @@ import { InitialProps } from "../utilities/Props";
 import { CommonInput } from "../utilities/Input";
 import { useFormik } from "formik";
 import { loginSchema } from "../utilities/Schema";
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login: React.FC<InitialProps> = (props: any) => {
-  
+
   const [show, setShow] = useState<boolean>(true)
+  const [loading, setLoading] = useState(false)
 
   const [focus, setFocus] = useState<any>([
     { key: 1, name: 'email', status: false },
@@ -27,14 +31,59 @@ const Login: React.FC<InitialProps> = (props: any) => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     },
     validationSchema: loginSchema,
-    onSubmit: () => {
-      Login();
+    onSubmit: async (values) => {
+      const loginSuccess = await handleLogin(values.email, values.password);
+      if (loginSuccess) {
+        props.navigation.navigate("Home");
+      }
     },
   });
+
+
+  const handleLogin = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const querySnapshot = await firestore()
+        .collection("Users")
+        .where("email", "==", email)
+        .get();
+
+      if (querySnapshot.empty) {
+        setLoading(false);
+        Alert.alert("Error", "User not found");
+        return false;
+      }
+
+      // Assuming only one user with a unique email
+      const userDoc = querySnapshot.docs[0];
+      const user = userDoc.data();
+
+      if (user) {
+        // Replace this with hashed password comparison in production
+        const isPasswordValid = user.password === password;
+
+        if (isPasswordValid) {
+          await AsyncStorage.setItem("uid", userDoc.id);
+          setLoading(false);
+          return true;
+        } else {
+          setLoading(false);
+          Alert.alert("Error", "Incorrect password");
+          return false;
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Login error:", error);
+      Alert.alert("Error", "An error occurred during login");
+      return false;
+    }
+  };
+
 
   function DoFocus(value: any) {
     focus.forEach((item: any) => {
@@ -47,67 +96,15 @@ const Login: React.FC<InitialProps> = (props: any) => {
     setFocus([...focus])
   }
 
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     webClientId:
-  //       '153790510307-kmtk385a7502b6ba76p2vsqvoegkqao5.apps.googleusercontent.com',
-  //     offlineAccess: false,
-  //     forceCodeForRefreshToken: true,
-  //   });
-  // }, []);
 
-  // const signIn = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices({
-  //       showPlayServicesUpdateDialog: true,
-  //     });
-  //     const userInfo: any = await GoogleSignin.signIn();
 
-  //     firestore()
-  //       .collection('providers')
-  //       .where('email', '==', userInfo?.user.email)
-  //       .get()
-  //       .then(async querySnapshot => {
-  //         if (querySnapshot.docs.length !== 0) {
-  //           const docData = querySnapshot.docs[0].data();
-  //           dispatch(setUserData(docData));
-  //           dispatch(resetLoginData());
-  //           if (
-  //             docData.aadharCardBack !== '' &&
-  //             docData.aadharCardFront !== ''
-  //           ) {
-  //             await AsyncStorage.setItem('aadhar', 'true');
-  //             props.navigation.navigate('Home');
-  //           } else {
-  //             await AsyncStorage.setItem('aadhar', 'false');
-  //             props.navigation.navigate('Aadhar');
-  //           }
-  //         } else {
-  //           dispatch(setLoginData(userInfo?.user));
-  //           dispatch(resetUserData());
-  //           await AsyncStorage.setItem('aadhar', 'false');
-  //           props.navigation.navigate('Register');
-  //         }
-  //       });
-  //   } catch (error: any) {
-  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-  //       console.log('User Cancelled the Login Flow');
-  //     } else if (error.code === statusCodes.IN_PROGRESS) {
-  //       console.log('Signing In');
-  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-  //       console.log('Play Services Not Available or Outdated');
-  //     } else {
-  //       console.log(error.message);
-  //     }
-  //   }
-  // };
-
-  function Login (){
-    Alert.alert('Login')
-  }
+  // function Login() {
+  //   Alert.alert('Login')
+  // }
 
   return (
     <LWrapper value="Login">
+      {loading && <Loadingcomponent />}
       <AppText style={styles.title}>Datify</AppText>
 
       <CommonInput
@@ -120,7 +117,11 @@ const Login: React.FC<InitialProps> = (props: any) => {
         iconSource={Images.user}
         iconstyle={{ width: 25, height: 25 }}
         value={formik.values.email}
-        onChangeText={formik.handleChange("email")}
+        onChangeText={(text) => {
+          if (text !== ' ') {
+            formik.setFieldValue('email', text)
+          }
+        }}
         onBlur={formik.handleBlur("email")}
         error={
           formik.touched.email && formik.errors.email ? formik.errors.email : ""
@@ -139,9 +140,9 @@ const Login: React.FC<InitialProps> = (props: any) => {
         value={formik.values.password}
         onChangeText={formik.handleChange("password")}
         eye="yes"
-        eyename={show ? 'eye' :'eye-slash'}
+        eyename={show ? 'eye' : 'eye-slash'}
         secureTextEntry={show}
-        onPress={()=>{
+        onPress={() => {
           setShow(!show)
         }}
         onBlur={formik.handleBlur("password")}
@@ -174,13 +175,13 @@ const styles = StyleSheet.create({
     marginVertical: width / 11
   },
   logo: { width: width / 1.1, height: width / 1.5, alignSelf: "center", marginVertical: width / 6 },
- 
+
   forgotpass: {
     alignSelf: 'flex-end',
     right: 15,
     color: colors.main2,
-    fontWeight:'bold',
-    top:-5
+    fontWeight: 'bold',
+    top: -5
   },
   or: {
     alignSelf: 'center',

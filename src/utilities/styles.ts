@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     top: 10,
     alignSelf: 'center',
     borderRadius: 8,
-    width: width / 1.15,
+    width: width / 1.4,
     backgroundColor: colors.main2,
     justifyContent: 'center',
     marginBottom: 10,

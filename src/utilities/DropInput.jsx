@@ -31,11 +31,11 @@ export const DropInput = ({
           borderColor: colors.main2,
           shadowOffset: { width: 0, height: 0 },
           borderWidth: 1,
-          height: 50,
+          height: 55,
           backgroundColor: colors.main1,
           borderRadius: 8,
           alignItems: "center",
-          width: width / 1.1,
+          width: width / 1.15,
           elevation: 5,
           paddingLeft: 15,
         }}

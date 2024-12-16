@@ -94,7 +94,7 @@ export const profiles = [
     education: 'Culinary Arts degree from Le Cordon Bleu',
     interests: ['Gourmet cooking', 'Wine tasting', 'Travel'],
     bio: 'Specializes in fusion cuisine and enjoys exploring new culinary trends. Travels frequently to find inspiration.',
-    images: [
+    images: ["https://images.indianexpress.com/2023/07/rajesh.jpg?w=640"
     ]
   },
   {

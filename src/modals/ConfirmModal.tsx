@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
 import Modal from "react-native-modal";
 import {
   AppText,
@@ -7,8 +7,12 @@ import {
   TouchableText,
 } from "../utilities/Helpers";
 import { colors, width } from "../utilities/constants";
+import firestore from '@react-native-firebase/firestore';
 
-const ConfirmModal = ({ isVisible, title, onBackdropPress }: any) => {
+
+const ConfirmModal = ({ isVisible, title,onPress, onBackdropPress,props }: any) => {
+
+
   return (
     <Modal
       animationIn={"slideInLeft"}
@@ -39,6 +43,7 @@ const ConfirmModal = ({ isVisible, title, onBackdropPress }: any) => {
         </AppText>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <TouchableText
+          onPress={onPress}
             text="Yes"
             style={{ color: "white", fontSize: 16, fontWeight: "600" }}
             vstyle={{

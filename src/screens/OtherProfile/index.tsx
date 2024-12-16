@@ -1,10 +1,11 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useState } from "react";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
 import {
   AppText,
   Commonbtn,
   ImageComponent,
   SpaceComponent,
+  TouchableComponent,
   WrapperNoScroll,
 } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
@@ -16,10 +17,69 @@ import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import { Cstyles } from "../../utilities/Cstyles";
 import ConfirmModal from "../../modals/ConfirmModal";
+import { Images } from "../../utilities/Images";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import moment from "moment";
+import firestore from '@react-native-firebase/firestore';
+
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
   const data = props.route.params.data;
   const [blockModal, setBlockModal] = useState(false);
+  const [age, setAge] = useState('');
+
+  useEffect(() => { handleConfirm() }, [])
+
+
+  const handleConfirm = () => {
+    const data = props.route.params.data;
+    const [day, month, year] = data.dob.split('-');
+    const date = new Date(`${year}-${month}-${day}`);
+    var today = new Date();
+
+    var birthDate = new Date(date);
+    // console.log(data.dob, birthDate);
+
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    let years: any = moment().diff(date, "years");
+    var newDate = moment(date).format("DD-MM-YYYY");
+    // console.log("age : ",years,newDate);
+    setAge(years)
+  };
+
+    const fetchProducts = async () => {
+      try {
+        const querySnapshot = await firestore().collection('Users').get();
+  
+        let dataa : any = [];
+        querySnapshot.forEach(documentSnapshot => {
+          dataa.push({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          });
+        });
+
+      
+
+        const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
+        await firstUserRef.update({
+          blocked:  [...dataa[0].blocked,data.id]
+        });
+
+        console.log('done');
+        setBlockModal(false)
+        props.navigation.navigate('Home')
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+  
+
+
   return (
     <WrapperNoScroll>
       <View style={{ ...styles.headerSView, ...styles.headerView1 }}>
@@ -36,7 +96,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             name={"block-helper"}
             size={25}
             color={colors.main2}
-            onPress={() => {setBlockModal(true)}}
+            onPress={() => { setBlockModal(true) }}
           />
           <Icon
             name={"star-outline"}
@@ -61,11 +121,14 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
               paginationStyleItem={{ height: 10, width: 10 }}
               data={data?.images}
               renderItem={({ item }) => (
+
                 <ImageComponent
                   resizeMode="contain"
                   source={{ uri: item }}
                   style={{ width: width, height: height / 2 }}
                 />
+
+
               )}
             />
           ) : (
@@ -83,11 +146,37 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           )}
         </View>
         <AppText style={{ ...Cstyles.widthview }}>
-          {data?.name} , {data?.age}
+          {data?.name}
         </AppText>
-        <AppText>Online Now</AppText>
+        <AppText style={{ ...Cstyles.widthview }}>
+          Gender -:{data.gender}
+        </AppText>
+        <AppText style={{ ...Cstyles.widthview }}>
+          Age -: {age}
+        </AppText>
+        <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'center' }}>
+          <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
+          <AppText>Online Now</AppText>
+        </View>
       </ScrollView>
-      <Commonbtn title="I Like You  ❤️" onPress={() => {}} />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.2, marginHorizontal: 30 }}>
+        <Commonbtn title="I Like You  ❤️" onPress={() => { }} />
+        <TouchableComponent onPress={() => props.navigation.navigate('Chat', { data: data })}>
+          <View style={{
+            minHeight: 50,
+            top: 10,
+            alignSelf: 'center',
+            borderRadius: 8,
+            width: width / 10,
+            backgroundColor: colors.main2,
+            justifyContent: 'center',
+            marginBottom: 10,
+            alignItems: 'center',
+            paddingHorizontal: 5
+          }}>
+            <Image source={Images.chat} style={{ height: 25, width: 25, tintColor: 'white' }} />
+          </View>
+        </TouchableComponent></View>
       <SpaceComponent />
       <ConfirmModal
         isVisible={blockModal}
@@ -95,6 +184,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         onBackdropPress={() => {
           setBlockModal(false);
         }}
+        onPress={()=>fetchProducts()}
       />
     </WrapperNoScroll>
   );

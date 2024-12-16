@@ -161,7 +161,7 @@ export const Loadingcomponent: React.FC = () => {
       backdropTransitionOutTiming={600}>
       <View
         style={styles.loadview}>
-        <ActivityIndicator size={'large'} color={'yellow'} />
+        <ActivityIndicator size={'large'} color={'purple'} />
       </View>
     </Modal>
   );

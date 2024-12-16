@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { AppText, Commonbtn, GoogleBtn, LWrapper } from "../utilities/Helpers";
 import { InitialProps } from "../utilities/Props";
@@ -12,6 +12,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
 import { Cstyles } from "../utilities/Cstyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import firestore from '@react-native-firebase/firestore';
 
 
 const Register: React.FC<InitialProps> = (props) => {
@@ -42,20 +43,20 @@ const Register: React.FC<InitialProps> = (props) => {
       setdatePickermodal(false);
     }
   };
-
   const formik = useFormik({
     initialValues: {
       name: "",
       dob: "",
       gender: "",
       showme: "",
-      image: [],
+      email: "",
+      password: "",
+      
     },
     validationSchema: registerSchema,
-    onSubmit: () => {
-      // Register();
-    },
+    onSubmit: () => { handleAdd() },
   });
+
 
   function DoFocus(value: any) {
     focus.forEach((item: any) => {
@@ -68,13 +69,44 @@ const Register: React.FC<InitialProps> = (props) => {
     setFocus([...focus]);
   }
 
+  const handleAdd = async () => {
+    try {
+      const userRef = firestore().collection('Users').doc(); // Replace 'Users' with your desired collection name
+      const uid = userRef.id; // Generate a unique document ID
+
+      await userRef.set({
+        id: uid, // Store the unique document ID
+        name: formik.values.name,
+        dob: formik.values.dob,
+        gender: formik.values.gender,
+        showme: formik.values.showme,
+        email: formik.values.email,
+        password: formik.values.password,
+        images: [],
+        blocked:[]
+      });
+
+      Alert.alert('Success', 'User data saved successfully!');
+      props.navigation.navigate('Login'); // Navigate to the desired screen
+    } catch (error) {
+      console.error('Error saving user data:', error);
+      Alert.alert('Error', 'Failed to save user data. Please try again.');
+    }
+  };
+
+
+
   return (
     <LWrapper value="Register">
-      <Ionicons name={"chevron-back"} size={35} color={colors.main2} onPress={()=>{
-    props.navigation.goBack()
-      }} />
-      <AppText style={styles.title1}>Register</AppText>
-      <AppText style={styles.title2}>Register now , Meet Singles 🫣</AppText>
+      <View style={{ flexDirection: 'row', minHeight: 50 }}>
+        <Ionicons name={"chevron-back"} size={35} color={colors.main2} onPress={() => {
+          props.navigation.goBack()
+        }} />
+        <View style={{ marginHorizontal: 10 }}>
+          <AppText style={styles.title1}>Register</AppText>
+          <AppText style={styles.title2}>Register now , Meet Singles 🫣</AppText>
+        </View>
+      </View>
       <CommonInput
         onFocus={() => {
           DoFocus("name");
@@ -95,13 +127,13 @@ const Register: React.FC<InitialProps> = (props) => {
         }}
         focus={focus[1].status}
         placeholder="Enter Email"
-        value={formik.values.name}
-        onChangeText={formik.handleChange("name")}
-        onBlur={formik.handleBlur("name")}
+        value={formik.values.email}
+        onChangeText={formik.handleChange("email")}
+        onBlur={formik.handleBlur("email")}
         error={
-          formik.touched.name && formik.errors.name ? formik.errors.name : ""
+          formik.touched.email && formik.errors.email ? formik.errors.email : ""
         }
-        errorspacing={formik.touched.name && formik.errors.name ? "yes" : "no"}
+        errorspacing={formik.touched.email && formik.errors.email ? "yes" : "no"}
       />
       <CommonInput
         onFocus={() => {
@@ -109,13 +141,13 @@ const Register: React.FC<InitialProps> = (props) => {
         }}
         focus={focus[2].status}
         placeholder="Enter Password"
-        value={formik.values.name}
-        onChangeText={formik.handleChange("name")}
-        onBlur={formik.handleBlur("name")}
+        value={formik.values.password}
+        onChangeText={formik.handleChange("password")}
+        onBlur={formik.handleBlur("password")}
         error={
-          formik.touched.name && formik.errors.name ? formik.errors.name : ""
+          formik.touched.password && formik.errors.password ? formik.errors.password : ""
         }
-        errorspacing={formik.touched.name && formik.errors.name ? "yes" : "no"}
+        errorspacing={formik.touched.password && formik.errors.password ? "yes" : "no"}
         eye="yes"
         eyename={show ? "eye" : "eye-slash"}
         secureTextEntry={show}
@@ -140,7 +172,7 @@ const Register: React.FC<InitialProps> = (props) => {
       <DropInput
         data={Gender}
         placeholder="Select Gender"
-        imgsrc={Images.cake}
+        imgsrc={Images.gender}
         value={formik.values.gender}
         onChange={(item: any) => {
           formik.setFieldValue("gender", item.label);
@@ -158,7 +190,7 @@ const Register: React.FC<InitialProps> = (props) => {
       <DropInput
         data={Gender}
         placeholder="Show me"
-        imgsrc={Images.cake}
+        imgsrc={Images.gender}
         value={formik.values.showme}
         onChange={(item: any) => {
           formik.setFieldValue("showme", item.label);
@@ -176,11 +208,9 @@ const Register: React.FC<InitialProps> = (props) => {
 
       <Commonbtn
         title="Continue"
-        onPress={() => {
-          props.navigation.navigate("Home");
-        }}
-        //  onPress={formik.handleSubmit}
+        onPress={formik.handleSubmit}
       />
+
       <AppText style={styles.or}>OR</AppText>
       <GoogleBtn
         onPress={() => {
@@ -238,15 +268,15 @@ const styles = StyleSheet.create({
   title1: {
     ...Cstyles.widthview,
     fontSize: width / 18,
-    color:colors.main2,
-    fontWeight:'700',
-    marginBottom:5
+    color: colors.main2,
+    fontWeight: '700',
+    marginBottom: 5
   },
   title2: {
     ...Cstyles.widthview,
     fontSize: width / 28,
-    color:colors.main2,
-     fontWeight:'400',
-     marginBottom:15
+    color: colors.main2,
+    fontWeight: '400',
+    marginBottom: 15
   },
 });
