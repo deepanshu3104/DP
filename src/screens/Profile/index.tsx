@@ -14,20 +14,24 @@ import ConfirmModal from "../../modals/ConfirmModal";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { Images } from "../../utilities/Images";
 
 
 const Profile: React.FC<InitialProps> = (props) => {
   const [logoutModal, setLogoutModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
- 
+  //   RRKq1DKRidkOLh9bh3Rp
   // });<
   const [products, setProducts] = useState<any>([]);
+
   const fetchProducts = async () => {
     try {
-      const uid:any = await AsyncStorage.getItem('uid')
+      const uid: any = await AsyncStorage.getItem('uid')
+      console.log(uid, 'hhhhhhhhhhh');
+
       const querySnapshot = await firestore().collection('Users').where("id", "==", uid).get();
       // console.log('Total products: ', querySnapshot.size);
-     
+
       let data: any = [];
       querySnapshot.forEach(documentSnapshot => {
         data.push({
@@ -41,13 +45,29 @@ const Profile: React.FC<InitialProps> = (props) => {
       console.error('Error fetching products:', error);
     }
   };
- useFocusEffect(
-     useCallback(() => {
-       fetchProducts()
-     }, [])
-   );
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  );
 
+  const dlt = async () => {
+    try {
+      console.log('started');
 
+      const uid: any = await AsyncStorage.getItem('uid')
+      await firestore().collection('Users').doc(uid).delete();
+      await AsyncStorage.removeItem("uid"); // Clear user ID from storage
+      console.log('ended');
+
+      // Navigate to the login screen
+      props.navigation.replace('Login')
+      setDeleteModal(false)
+    } catch (error) {
+      console.error("Error handling account deletion:", error);
+    }
+
+  }
 
 
   return (
@@ -91,6 +111,19 @@ const Profile: React.FC<InitialProps> = (props) => {
         >
           {products[0]?.name}
         </AppText>
+        <TouchableComponent style={{
+          height: 35,
+          width: 35,
+          backgroundColor: 'white',
+          borderRadius: 30,
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          right:width/3
+        }} onPress={()=>props.navigation.navigate('Edit',{data:products[0]})}>
+          <ImageComponent source={Images.pencil} style={{ height: 20, width: 20 }} />
+        </TouchableComponent>
+
       </View>
       <Card index={0} onPress={() => { props.navigation.navigate('Favourites', { favourite: products[0].favourite }) }} />
       <Card index={1} onPress={() => { props.navigation.navigate('Blocked', { blocked: products[0].blocked }) }} />
@@ -104,7 +137,7 @@ const Profile: React.FC<InitialProps> = (props) => {
           try {
             // Clear the stored user ID from AsyncStorage
             await AsyncStorage.removeItem("uid");
-      
+
             // Navigate to the login screen
             props.navigation.replace('Login')
             setLogoutModal(false);
@@ -119,6 +152,7 @@ const Profile: React.FC<InitialProps> = (props) => {
       <ConfirmModal
         isVisible={deleteModal}
         title={'Are You sure you want to Delete this Account ?'}
+        onPress={() => dlt()}
         onBackdropPress={() => {
           setDeleteModal(false);
         }}

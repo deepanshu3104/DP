@@ -11,6 +11,7 @@ import Chat from '../screens/Chat';
 import OtherProfile from '../screens/OtherProfile';
 import Blocked from '../screens/Blocked';
 import Favourites from '../screens/Favourites';
+import Edit from '../screens/Edit';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -27,6 +28,7 @@ const Stack = () => {
           <stack.Screen name="OtherProfile" component={OtherProfile} />
           <stack.Screen name="Blocked" component={Blocked} />
           <stack.Screen name="Favourites" component={Favourites} />
+          <stack.Screen name="Edit" component={Edit} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -68,6 +68,7 @@ const Login: React.FC<InitialProps> = (props: any) => {
 
         if (isPasswordValid) {
           await AsyncStorage.setItem("uid", userDoc.id);
+          props.navigation.navigate('Home')
           setLoading(false);
           return true;
         } else {
