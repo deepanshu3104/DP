@@ -1,62 +1,78 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { InitialProps } from '../../utilities/Props'
-import { AppText, Wrapper } from '../../utilities/Helpers'
+import { AppText, Wrapper,Header } from '../../utilities/Helpers'
 import firestore from '@react-native-firebase/firestore';
+import { colors, fonts, width } from "../../utilities/constants";
 
 
 const Blocked: React.FC<InitialProps> = (props) => {
+const userIds = props.route.params.blocked
+console.log(userIds);
+
   const [products, setProducts] = useState<any>([]);
+  const [loading, setLoading] = useState<any>(false);
 
-  const fetchProducts = async () => {
+  useEffect(()=>{
+    fetchUsers()
+  },[])
+
+  const fetchUsers = async () => {
     try {
-      const querySnapshot = await firestore().collection("Users").get();
+      // Query Firestore for users whose IDs match the array
+      const usersSnapshot = await firestore()
+        .collection('Users')
+        .where(firestore.FieldPath.documentId(), 'in', userIds)
+        .get();
 
-      let data: any = [];
-      for (const documentSnapshot of querySnapshot.docs) {
-        const userData = documentSnapshot.data();
-        const blockedUserIds = userData.blocked || [];
+      // Extract user data from documents
+      const userData = usersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(userData,"yyyy");
+      
 
-        // Fetch names of blocked users
-        const blockedUsers: any = [];
-        for (const blockedUserId of blockedUserIds) {
-          const blockedUserDoc = await firestore()
-            .collection("Users")
-            .doc(blockedUserId)
-            .get();
-          if (blockedUserDoc.exists) {
-            const blockedUserData = blockedUserDoc.data();
-            blockedUsers.push(blockedUserData?.name || "Unknown User");
-          }
-        }
-
-        // Add the user with replaced blocked data
-        data.push({
-          id: documentSnapshot.id,
-          ...userData,
-          blocked: blockedUsers, // Replace IDs with names
-        });
-      }
-
-      setProducts(data);
+      setProducts(userData);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  function block ({item} : any){
+    return (
+      <View style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              backgroundColor: 'white',
+              width: width / 1.1,
+              height: 70,
+              alignItems: 'center',
+              marginHorizontal: 20,
+              borderWidth:1,
+              borderColor:colors.main2,
+              borderRadius:13
+            }}>
+        <Image source={{ uri: item.images[0] }} style={{ height: width / 8, width: width / 8, marginHorizontal: 20 ,marginLeft:10,    borderRadius:8}} />
+               <AppText style={{
+                 fontSize: 23,
+                 color: "black",
+                 fontWeight: '400'
+               }}>{item.name}</AppText>
+      </View>
+    )
+  }
+
   return (
     <Wrapper>
-      <AppText>Blocked</AppText>
-      <AppText
-        style={{
-          alignSelf: "center",
-        }}
-      >
-        {products[0]?.blocked}
-      </AppText>
+      <Header title={'Blocked'} onPress={()=>props.navigation.goBack()}/>
+      {/* <Text style={{fontFamily: fonts.playregular,
+                 color: "#6A5ACD",
+                 fontSize: 40,
+                 marginHorizontal:20}}>Blocked</Text> */}
+ <FlatList data={products}  renderItem={block}/>
     </Wrapper>
   )
 }

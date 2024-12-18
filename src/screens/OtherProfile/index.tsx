@@ -21,10 +21,13 @@ import { Images } from "../../utilities/Images";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import moment from "moment";
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
   const data = props.route.params.data;
+
+
   const [blockModal, setBlockModal] = useState(false);
   const [age, setAge] = useState('');
 
@@ -52,17 +55,25 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
   };
 
   const fetchProducts = async () => {
+   
     try {
       const querySnapshot = await firestore().collection('Users').get();
-
+      const uid:any = await AsyncStorage.getItem('uid')
       let dataa: any = [];
       querySnapshot.forEach(documentSnapshot => {
-        dataa.push({
-          id: documentSnapshot.id,
-          ...documentSnapshot.data(),
-        });
+
+        if(documentSnapshot.id == uid ){
+          dataa.push({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          });
+        }
+       
       });
-      const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
+
+      console.log(dataa);
+      
+      const firstUserRef = firestore().collection('Users').doc(uid);
       await firstUserRef.update({
         blocked: [...dataa[0].blocked, data.id]
       });
@@ -77,15 +88,17 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
   const fav = async () => {
     try {
       const querySnapshot = await firestore().collection('Users').get();
-
+      const uid:any = await AsyncStorage.getItem('uid')
       let dataa: any = [];
       querySnapshot.forEach(documentSnapshot => {
-        dataa.push({
-          id: documentSnapshot.id,
-          ...documentSnapshot.data(),
-        });
+        if(documentSnapshot.id == uid ){
+          dataa.push({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          });
+        }
       });
-      const firstUserRef = firestore().collection('Users').doc(dataa[0].id);
+      const firstUserRef = firestore().collection('Users').doc(uid);
       await firstUserRef.update({
         favourite: [...dataa[0].favourite, data.id]
       });

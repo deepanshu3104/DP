@@ -3,10 +3,12 @@ import React from 'react'
 import { styles } from './styles'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal';
-import { AppTextProps, CommonbtnProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
-import { colors } from './constants';
+import { AppTextProps, CommonbtnProps, HeaderProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
+import { colors, fonts } from './constants';
 import { useNavigation } from '@react-navigation/native';
 import { Images } from './Images';
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 
 export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
@@ -22,7 +24,7 @@ export const WrapperNoScroll: React.FC<WrapperProps> = ({ children }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.main1} barStyle={'dark-content'} />
-        {children}
+      {children}
     </SafeAreaView>
   )
 }
@@ -171,3 +173,23 @@ export const SpaceComponent: React.FC = () => {
   return <View style={{ marginVertical: 10 }} />;
 }
 
+export const Header: React.FC<HeaderProps>  = ({
+  onPress, title
+}: any) => {
+  return (
+    <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 20, alignItems: 'center' }}>
+      <Ionicons
+        name={"chevron-back"}
+        size={35}
+        color={colors.main2}
+        onPress={onPress}
+      />
+      <Text style={{
+        fontFamily: fonts.playregular,
+        color: "#6A5ACD",
+        fontSize: 30,
+        marginHorizontal: 20
+      }}>{title}</Text>
+    </View>
+  );
+};

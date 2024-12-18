@@ -1,5 +1,5 @@
 import { FlatList, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { InitialProps } from "../../utilities/Props";
 import {
   AppText,
@@ -12,33 +12,23 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ConfirmModal from "../../modals/ConfirmModal";
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const Profile: React.FC<InitialProps> = (props) => {
   const [logoutModal, setLogoutModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  // const [data, setData] = useState<any>({
-  //   id: 2,
-  //   name: "Aishwarya Rai",
-  //   age: 34,
-  //   occupation: "Software Developer",
-  //   location: "San Francisco, CA",
-  //   education: "BS in Computer Science from Stanford",
-  //   interests: ["Coding", "Video games", "Cycling"],
-  //   bio: "Enthusiastic coder who enjoys solving complex problems and is an avid gamer. Always on the lookout for new tech innovations.",
-  //   images: [
-  //     "https://www.hollywoodreporter.com/wp-content/uploads/2011/05/chopard_gallery_2-2011-a-p.jpg?w=1440&h=810&crop=1",
-  //     "https://static.toiimg.com/photo/96227403/96227403.jpg?v=3",
-  //     "https://m.media-amazon.com/images/M/MV5BNmZmOWVmOTAtZTE3OS00OTBlLTg3M2EtYWRlNDI0NzI5OWY3XkEyXkFqcGdeQXVyNDI3NjU1NzQ@._V1_.jpg",
-  //   ],
+ 
   // });<
   const [products, setProducts] = useState<any>([]);
   const fetchProducts = async () => {
     try {
-      const querySnapshot = await firestore().collection('Users').get();
+      const uid:any = await AsyncStorage.getItem('uid')
+      const querySnapshot = await firestore().collection('Users').where("id", "==", uid).get();
       // console.log('Total products: ', querySnapshot.size);
-
-      let data : any = [];
+     
+      let data: any = [];
       querySnapshot.forEach(documentSnapshot => {
         data.push({
           id: documentSnapshot.id,
@@ -51,12 +41,14 @@ const Profile: React.FC<InitialProps> = (props) => {
       console.error('Error fetching products:', error);
     }
   };
-  useEffect(() => {
+ useFocusEffect(
+     useCallback(() => {
+       fetchProducts()
+     }, [])
+   );
 
 
-    fetchProducts();
-  }, []);
-  
+
 
   return (
     <Wrapper>
@@ -100,15 +92,26 @@ const Profile: React.FC<InitialProps> = (props) => {
           {products[0]?.name}
         </AppText>
       </View>
-      <Card index={0} onPress={() => {props.navigation.navigate('Favourites') }} />
-      <Card index={1} onPress={() => { props.navigation.navigate('Blocked')}} />
+      <Card index={0} onPress={() => { props.navigation.navigate('Favourites', { favourite: products[0].favourite }) }} />
+      <Card index={1} onPress={() => { props.navigation.navigate('Blocked', { blocked: products[0].blocked }) }} />
       {/* <Card index={2} onPress={() => { }} /> */}
       <Card index={3} onPress={() => { setLogoutModal(true) }} />
       <Card index={4} onPress={() => { setDeleteModal(true) }} />
       <ConfirmModal
         isVisible={logoutModal}
         title={'Are You sure you want to Logout ?'}
-
+        onPress={async () => {
+          try {
+            // Clear the stored user ID from AsyncStorage
+            await AsyncStorage.removeItem("uid");
+      
+            // Navigate to the login screen
+            props.navigation.replace('Login')
+            setLogoutModal(false);
+          } catch (error) {
+            console.error("Error logging out:", error);
+          }
+        }}
         onBackdropPress={() => {
           setLogoutModal(false);
         }}

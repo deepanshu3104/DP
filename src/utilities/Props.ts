@@ -83,3 +83,8 @@ export interface CommonInputBtnProps {
   dropSource?: any;
   dropstyle?: any;
 }
+
+export interface HeaderProps{
+  onPress?: () => void;
+  title?:string
+}

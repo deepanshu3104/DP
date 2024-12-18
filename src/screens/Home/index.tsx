@@ -1,5 +1,5 @@
 import { FlatList, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { InitialProps } from "../../utilities/Props";
 import {
   AppText,
@@ -14,6 +14,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { styles } from "./style";
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home: React.FC<InitialProps> = (props) => {
 
@@ -35,10 +37,10 @@ const Home: React.FC<InitialProps> = (props) => {
             <Fontisto name={"person"} size={width / 5} color={"grey"} />
           )}
         </View>
-        <MaterialIcons name={"star"} size={20} color={'#FFD700'}  style={{position:'absolute',top:5,right:5}}/>
-        <View style={{flexDirection:'row',position:'absolute',alignItems:'center',bottom:5, width: width/3.05,justifyContent:'space-evenly'}}>
-        <MaterialIcons name={"circle"} size={15} color={'green'}  style={{}}/>
-        <AppText style={{width:width/3.8,color:'black',fontWeight:'600'}}>{item.name}</AppText>
+        {item.favourite && <MaterialIcons name={"star"} size={20} color={'#FFD700'} style={{ position: 'absolute', top: 5, right: 5 }} />}
+        <View style={{ flexDirection: 'row', position: 'absolute', alignItems: 'center', bottom: 5, width: width / 3.05, justifyContent: 'space-evenly' }}>
+          <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
+          <AppText style={{ width: width / 3.8, color: 'black', fontWeight: '600' }}>{item.name}</AppText>
         </View>
       </TouchableComponent>
     );
@@ -49,27 +51,45 @@ const Home: React.FC<InitialProps> = (props) => {
   const fetchProducts = async () => {
     try {
       const querySnapshot = await firestore().collection('Users').get();
-      // console.log('Total products: ', querySnapshot.size);
+      const uid = await AsyncStorage.getItem('uid')
 
-      let data : any = [];
+      let data: any = [];
+      let blocked: any = [];
+      let faves: any = [];
       querySnapshot.forEach(documentSnapshot => {
-        data.push({
-          id: documentSnapshot.id,
-          ...documentSnapshot.data(),
-        });
+        if (documentSnapshot.id == uid) {
+          blocked = documentSnapshot.data().blocked
+          faves = documentSnapshot.data().favourite
+        } else {
+          data.push({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          });
+        }
+
       });
 
-      setProducts(data);
+      const filtered = data.filter((item: any) => !blocked.includes(item.id))
+
+      filtered.forEach((item: any) => {
+        if (faves.includes(item.id)) {
+          item.favourite = true
+        } else {
+          item.favourite = false
+        }
+      })
+      console.log(filtered);
+      setProducts(filtered);
       console.log('Fetched products:', data);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
-  useEffect(() => {
-
-
-    fetchProducts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  );
   return (
     <Wrapper>
       <View style={styles.headerview}>
@@ -78,7 +98,7 @@ const Home: React.FC<InitialProps> = (props) => {
           name={"filter"}
           size={25}
           color={colors.main2}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       </View>
       <FlatList data={products} numColumns={3} renderItem={renderProfiles} />
