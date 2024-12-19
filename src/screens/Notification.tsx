@@ -64,14 +64,14 @@ const Notification: React.FC<InitialProps> = (props) => {
                     borderRadius: 13,
 
                 }}>
-                    <Image source={{ uri: item.images[0] }} style={{ height: width / 8, width: width / 8, marginHorizontal: 10, marginLeft: 10, borderRadius: 8 }} />
+                    <Image source={{ uri: item.images[0] }} style={{ height: width / 10, width: width / 10, marginHorizontal: 10, marginLeft: 10, borderRadius: 8 }} />
                     <AppText style={{
-                        fontSize: 23,
+                        fontSize: 18,
                         color: "black",
-                        fontWeight: '400'
+                        fontWeight: '600'
                     }}>{item.name}</AppText>
                     <AppText style={{
-                        fontSize: 23,
+                        fontSize: 18,
                         color: "black",
                         fontWeight: '300'
                     }}> sent you a like ❤️</AppText>
