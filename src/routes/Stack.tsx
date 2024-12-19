@@ -12,6 +12,7 @@ import OtherProfile from '../screens/OtherProfile';
 import Blocked from '../screens/Blocked';
 import Favourites from '../screens/Favourites';
 import Edit from '../screens/Edit';
+import Notification from '../screens/Notification';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -29,6 +30,7 @@ const Stack = () => {
           <stack.Screen name="Blocked" component={Blocked} />
           <stack.Screen name="Favourites" component={Favourites} />
           <stack.Screen name="Edit" component={Edit} />
+          <stack.Screen name="Notification" component={Notification} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -94,12 +94,20 @@ const Home: React.FC<InitialProps> = (props) => {
     <Wrapper>
       <View style={styles.headerview}>
         <Text style={styles.headertext}>Datify</Text>
-        <Fontisto
-          name={"filter"}
-          size={25}
-          color={colors.main2}
-          onPress={() => { }}
-        />
+        <View style={{flexDirection:'row',justifyContent:'space-between',width:width/5.5}}>
+          <Fontisto
+            name={"heart"}
+            size={25}
+            color={colors.main2}
+            onPress={() => { props.navigation.navigate('Notification') }}
+          />
+          <Fontisto
+            name={"filter"}
+            size={25}
+            color={colors.main2}
+            onPress={() => { }}
+          />
+        </View>
       </View>
       <FlatList data={products} numColumns={3} renderItem={renderProfiles} />
     </Wrapper>

@@ -27,10 +27,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const OtherProfile: React.FC<InitialProps> = (props) => {
   const data = props.route.params.data;
 
-
+console.log("profile render")
   const [blockModal, setBlockModal] = useState(false);
   const [age, setAge] = useState('');
-
   useEffect(() => { handleConfirm() }, [])
 
 
@@ -53,26 +52,26 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
     // console.log("age : ",years,newDate);
     setAge(years)
   };
-
   const fetchProducts = async () => {
-   
+
     try {
       const querySnapshot = await firestore().collection('Users').get();
-      const uid:any = await AsyncStorage.getItem('uid')
+      const uid: any = await AsyncStorage.getItem('uid')
+
       let dataa: any = [];
       querySnapshot.forEach(documentSnapshot => {
 
-        if(documentSnapshot.id == uid ){
+        if (documentSnapshot.id == uid) {
           dataa.push({
             id: documentSnapshot.id,
             ...documentSnapshot.data(),
           });
         }
-       
+
       });
 
-      console.log(dataa);
-      
+      console.log('user data==>>>>',dataa);
+
       const firstUserRef = firestore().collection('Users').doc(uid);
       await firstUserRef.update({
         blocked: [...dataa[0].blocked, data.id]
@@ -85,13 +84,14 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       console.error('Error fetching products:', error);
     }
   };
+  
   const fav = async () => {
     try {
       const querySnapshot = await firestore().collection('Users').get();
-      const uid:any = await AsyncStorage.getItem('uid')
+      const uid: any = await AsyncStorage.getItem('uid')
       let dataa: any = [];
       querySnapshot.forEach(documentSnapshot => {
-        if(documentSnapshot.id == uid ){
+        if (documentSnapshot.id == uid) {
           dataa.push({
             id: documentSnapshot.id,
             ...documentSnapshot.data(),
@@ -110,8 +110,22 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       console.error('Error fetching products:', error);
     }
   };
+  const like = async () => {
 
+    try {
+      const uid: any = await AsyncStorage.getItem('uid')
+      const firstUserRef = firestore().collection('Users').doc(data.id);
+      await firstUserRef.update({
+        likes: [...data.likes, uid]
+      });
 
+      console.log('done');
+      
+    
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <WrapperNoScroll>
@@ -131,14 +145,15 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             color={colors.main2}
             onPress={() => { setBlockModal(true) }}
           />
-          <Icon
-            name={"star-outline"}
-            size={35}
-            color={colors.main2}
-            onPress={() => {
-              fav()
-            }}
-          />
+          {data.favourite ? <MaterialIcons name={"star"} size={35} color={'#FFD700'} style={{ position: 'absolute', right: 5 }} />
+            : <Icon
+              name={"star-outline"}
+              size={35}
+              color={colors.main2}
+              onPress={() => {
+                fav()
+              }}
+            />}
         </View>
       </View>
       <ScrollView>
@@ -193,7 +208,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         </View>
       </ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.2, marginHorizontal: 30 }}>
-        <Commonbtn title="I Like You  ❤️" onPress={() => { }} />
+        <Commonbtn title="I Like You  ❤️" onPress={() => { like() }}/>
         <TouchableComponent onPress={() => props.navigation.navigate('Chat', { data: data })}>
           <View style={{
             minHeight: 50,

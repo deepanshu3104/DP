@@ -9,7 +9,7 @@ export const loginSchema = yup.object().shape({
     .string()
     .required('Please enter your Password')
     .trim('Please enter your Password')
-    .min(6,"Password must contain atleast 6 chsracters"),
+    .min(6, "Password must contain atleast 6 chsracters"),
 });
 export const registerSchema = yup.object().shape({
   name: yup
@@ -36,6 +36,7 @@ export const registerSchema = yup.object().shape({
     .string()
     .required('Please enter your Password')
     .trim('Please enter your Password')
-    .min(6,"Password must contain atleast 6 chsracters")
+    .min(6, "Password must contain atleast 6 chsracters")
+ 
 
 });

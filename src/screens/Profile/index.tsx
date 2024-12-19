@@ -107,6 +107,8 @@ const Profile: React.FC<InitialProps> = (props) => {
         <AppText
           style={{
             alignSelf: "center",
+            color:'black',
+            fontSize:20
           }}
         >
           {products[0]?.name}

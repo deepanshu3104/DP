@@ -72,7 +72,8 @@ const Favourites: React.FC<InitialProps> = (props) => {
     <Wrapper>
            <Header title={'Favourite'} onPress={()=>props.navigation.goBack()}/>
      
-      <FlatList data={products} renderItem={fav} />
+     {userIds.length !== 0 ? <FlatList data={products} renderItem={fav} />:
+      <AppText style={{ textAlign: 'center',marginTop:50}}>No Data Found</AppText>}
     </Wrapper>
   );
 };

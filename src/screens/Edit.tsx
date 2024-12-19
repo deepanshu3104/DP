@@ -1,6 +1,6 @@
-import { Alert,View } from "react-native";
+import { Alert, View } from "react-native";
 import React, { useState } from "react";
-import {Commonbtn,Wrapper, Header } from "../utilities/Helpers";
+import { Commonbtn, Wrapper, Header, Loadingcomponent } from "../utilities/Helpers";
 import { InitialProps } from "../utilities/Props";
 import { colors, fonts, Gender, width } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
@@ -12,6 +12,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loading from "./Loading";
 
 
 const Edit: React.FC<InitialProps> = (props) => {
@@ -22,6 +23,7 @@ const Edit: React.FC<InitialProps> = (props) => {
     { key: 1, name: "email", status: false },
     { key: 2, name: "password", status: false },
   ]);
+  const [loading, setLoading] = useState(false)
   const handleConfirm = (date: any) => {
     var today = new Date();
     var birthDate = new Date(date);
@@ -51,24 +53,55 @@ const Edit: React.FC<InitialProps> = (props) => {
 
     },
     validationSchema: registerSchema,
-    onSubmit: () => { handleAdd() },
+    onSubmit: () => { update() },
   });
   const handleAdd = async () => {
+    setLoading(true)
     try {
       const data = props.route.params.data
-      await formik.setFieldValue('name',data.name)
-      await formik.setFieldValue('email',data.email)
-      await formik.setFieldValue('password',data.password)
-      await formik.setFieldValue('dob',data.dob)
-      await formik.setFieldValue('gender',data.gender)
-      await formik.setFieldValue('showme',data.showmee)
+      await formik.setFieldValue('name', data.name)
+      await formik.setFieldValue('email', data.email)
+      await formik.setFieldValue('password', data.password)
+      await formik.setFieldValue('dob', data.dob)
+      await formik.setFieldValue('gender', data.gender)
+      await formik.setFieldValue('showme', data.showme)
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching products:', error);
+      setLoading(false)
     }
   };
-  React.useEffect(()=>{
-handleAdd()
-  },[])
+
+  React.useEffect(() => {
+    handleAdd()
+
+  }, [])
+  const update = async () => {
+    setLoading(true)
+    try {
+      console.log('started');
+
+      const uid: any = await AsyncStorage.getItem('uid')
+      const firstUserRef = firestore().collection('Users').doc(uid);
+      await firstUserRef.update({
+        name: formik.values.name,
+        email: formik.values.email,
+        password: formik.values.password,
+        dob: formik.values.dob,
+        gender: formik.values.gender,
+        showme: formik.values.showme,
+      });
+      setLoading(false)
+      console.log('ended');
+      props.navigation.goBack()
+    }
+    catch (error) {
+      console.log('Error while updating:', error);
+      setLoading(false)
+
+    }
+  }
+
   function DoFocus(value: any) {
     focus.forEach((item: any) => {
       if (item.name == value) {
@@ -81,6 +114,7 @@ handleAdd()
   }
   return (
     <Wrapper>
+      {loading && <Loadingcomponent />}
       <View>
         <Header title={'Edit Profile'} onPress={() => props.navigation.goBack()} />
         <CommonInput
@@ -111,7 +145,7 @@ handleAdd()
           }
           errorspacing={formik.touched.email && formik.errors.email ? "yes" : "no"}
           textContentType="name" // Autofill name
-  autoComplete="name"
+          autoComplete="name"
         />
         <CommonInput
           onFocus={() => {
@@ -133,6 +167,7 @@ handleAdd()
             setShow(!show);
           }}
         />
+
 
         <CommonInputBtn
           value={
@@ -184,13 +219,11 @@ handleAdd()
           label="label"
         />
 
+
         <Commonbtn
           title="Continue"
           onPress={formik.handleSubmit}
         />
-
-
-
         <DateTimePickerModal
           isVisible={datepickermodal}
           maximumDate={new Date()}
