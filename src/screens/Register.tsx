@@ -84,7 +84,8 @@ const Register: React.FC<InitialProps> = (props) => {
         password: formik.values.password,
         images: [],
         blocked:[],
-        favourite:[]
+        favourite:[],
+        likes:[]
       });
 
       Alert.alert('Success', 'User data saved successfully!');

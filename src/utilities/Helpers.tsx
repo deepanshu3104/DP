@@ -119,9 +119,11 @@ export const AppText: React.FC<AppTextProps> = ({
   numberOfLines,
 }) => {
   return (
+    
     <Text style={style} numberOfLines={numberOfLines}>
       {children}
     </Text>
+  
   );
 };
 
@@ -173,7 +175,7 @@ export const SpaceComponent: React.FC = () => {
   return <View style={{ marginVertical: 10 }} />;
 }
 
-export const Header: React.FC<HeaderProps>  = ({
+export const Header: React.FC<HeaderProps> = ({
   onPress, title
 }: any) => {
   return (

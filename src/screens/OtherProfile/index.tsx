@@ -27,8 +27,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const OtherProfile: React.FC<InitialProps> = (props) => {
   const data = props.route.params.data;
 
-console.log("profile render")
+  useEffect(() => { GetData() }, [])
+  useEffect(() => { GetMatchedData() }, [])
+  console.log("profile render")
   const [blockModal, setBlockModal] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [matched, setMatched] = useState(false)
   const [age, setAge] = useState('');
   useEffect(() => { handleConfirm() }, [])
 
@@ -70,7 +74,7 @@ console.log("profile render")
 
       });
 
-      console.log('user data==>>>>',dataa);
+      console.log('user data==>>>>', dataa);
 
       const firstUserRef = firestore().collection('Users').doc(uid);
       await firstUserRef.update({
@@ -84,7 +88,7 @@ console.log("profile render")
       console.error('Error fetching products:', error);
     }
   };
-  
+
   const fav = async () => {
     try {
       const querySnapshot = await firestore().collection('Users').get();
@@ -110,22 +114,124 @@ console.log("profile render")
       console.error('Error fetching products:', error);
     }
   };
+
+
   const like = async () => {
 
     try {
+
       const uid: any = await AsyncStorage.getItem('uid')
       const firstUserRef = firestore().collection('Users').doc(data.id);
       await firstUserRef.update({
         likes: [...data.likes, uid]
       });
 
+
       console.log('done');
-      
-    
+
+
+    } catch (error) {
+      console.error('Error:', error);
+
+    }
+  };
+
+  async function GetData() {
+    try {
+      const uid: any = await AsyncStorage.getItem('uid')
+      const data = props.route.params.data;
+      const querySnapshot = await firestore().collection('Users').where("id", "==", uid).get();
+      const userData: any = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const likes = userData[0].likes
+      console.log(likes);
+
+      if (likes.includes(data.id)) {
+        setLiked(true)
+      }
     } catch (error) {
       console.error('Error:', error);
     }
+  }
+  const Matches = async () => {
+    try {
+      // Get the current user ID and the other person's ID
+      const currentUserId = await AsyncStorage.getItem('uid');
+      const otherUserId = data.id;
+  
+      if (!currentUserId || !otherUserId) {
+        Alert.alert('Error', 'User ID is missing!');
+        return;
+      }
+  
+      // Get the reference to the Matches collection
+      const matchesRef = firestore().collection('Matches');
+  
+      // Check if a match already exists for this combination
+      const querySnapshot = await matchesRef
+        .where('userid', '==', currentUserId)
+        .get();
+  
+      if (querySnapshot.empty) {
+        // Create a new match document since it doesn't exist
+        const newMatch = {
+          users:  [otherUserId], // Store both user IDs in an array
+          timestamp: firestore.FieldValue.serverTimestamp(), // Track when the match occurred
+          userid: currentUserId, // Optionally track who initiated the match
+        };
+  
+        await matchesRef.add(newMatch);
+  
+        // Show a success message
+        Alert.alert('Hurray', 'Matched successfully!');
+      } else {
+        // Match already exists
+        
+        
+      }
+    } catch (error) {
+      // If there’s an error, show an error message
+      console.error('Error creating match:', error);
+      Alert.alert('Error', 'Something went wrong!');
+    }
   };
+  
+  async function GetMatchedData() {
+    try {
+      const uid: any = await AsyncStorage.getItem('uid')
+
+      const querySnapshot = await firestore().collection('Matches').where('userid', '==', uid).get();
+      const userData: any = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const matched = userData[0].users
+      console.log(matched, " hlooooooooo");
+
+      if (matched.includes(data.id)) {
+        console.log('hiiii');
+        setMatched(true)
+      }
+    } catch (error) {
+      console.error('Error1234654:', error);
+    }
+  }
+  const Button = () => {
+    if (matched) {
+      return <Commonbtn title="Already matched" onPress={() => { }} />;
+    } else if (liked) {
+      return <Commonbtn title="I Like You 2 ❤️" onPress={() => { Matches(); }} />;
+    } else {
+      return <Commonbtn title="I Like You ❤️" onPress={() => { like(); }} />;
+    }
+  };
+  
+// useEffect(() => { button() }, [])
+
 
   return (
     <WrapperNoScroll>
@@ -193,22 +299,45 @@ console.log("profile render")
             </View>
           )}
         </View>
-        <AppText style={{ ...Cstyles.widthview }}>
-          {data?.name}
-        </AppText>
-        <AppText style={{ ...Cstyles.widthview }}>
-          Gender -:{data.gender}
-        </AppText>
-        <AppText style={{ ...Cstyles.widthview }}>
-          Age -: {age}
-        </AppText>
-        <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'center' }}>
+        <View style={{
+          flexDirection: 'row',
+          width: width / 1.1,
+          justifyContent: 'space-evenly',
+          alignSelf: 'center',
+          marginTop: 20,
+          backgroundColor: '#dfd6ef',
+          height: 70,
+          alignItems: 'center',
+          marginHorizontal: 20,
+          borderWidth: 1,
+          borderColor: colors.main2,
+          borderRadius: 13,
+
+        }}>
+          <AppText style={{ ...Cstyles.widthview }}>
+            {data?.name}
+          </AppText>
+          <AppText style={{ ...Cstyles.widthview }}>
+            ||
+          </AppText>
+          <AppText style={{ ...Cstyles.widthview }}>
+            {age}
+          </AppText>
+          <AppText style={{ ...Cstyles.widthview }}>
+            ||
+          </AppText>
+          <AppText style={{ ...Cstyles.widthview }}>
+            {data.gender}</AppText>
+
+        </View>
+        <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'center', marginTop: 20 }}>
           <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
           <AppText>Online Now</AppText>
+
         </View>
       </ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.2, marginHorizontal: 30 }}>
-        <Commonbtn title="I Like You  ❤️" onPress={() => { like() }}/>
+      {Button()}
         <TouchableComponent onPress={() => props.navigation.navigate('Chat', { data: data })}>
           <View style={{
             minHeight: 50,
