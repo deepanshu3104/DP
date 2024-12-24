@@ -26,7 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
-  const data = props.route.params.data;
+  const [data,setData] =useState(props.route.params.data);
 
   useEffect(() => { GetData() }, [])
   useEffect(() => { GetMatchedData() }, [])
@@ -118,6 +118,10 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         await firstUserRef.update({
           favourite: updatedFavourites,
         });
+        setData((prevData) => ({
+          ...prevData,
+          favourite: false,
+        }));
         setFavourite(false); // Set to normal star
         Alert.alert("Removed from favourites");
       } else {
@@ -125,6 +129,10 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         await firstUserRef.update({
           favourite: [...user.favourite, data.id],
         });
+        setData((prevData) => ({
+          ...prevData,
+          favourite: true,
+        }));
         setFavourite(true); // Set to golden star
         Alert.alert("Added to favourites");
       }
