@@ -26,7 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
-  const [data,setData] =useState(props.route.params.data);
+  const [data, setData] = useState(props.route.params.data);
 
   useEffect(() => { GetData() }, [])
   useEffect(() => { GetMatchedData() }, [])
@@ -118,22 +118,22 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         await firstUserRef.update({
           favourite: updatedFavourites,
         });
-        setData((prevData) => ({
+        setData((prevData: any) => ({
           ...prevData,
           favourite: false,
         }));
-        setFavourite(false); // Set to normal star
+
         Alert.alert("Removed from favourites");
       } else {
         // Add the item to favourites
         await firstUserRef.update({
           favourite: [...user.favourite, data.id],
         });
-        setData((prevData) => ({
+        setData((prevData: any) => ({
           ...prevData,
           favourite: true,
         }));
-        setFavourite(true); // Set to golden star
+
         Alert.alert("Added to favourites");
       }
 
@@ -420,20 +420,22 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         }}>
           <AppText style={{ color: "black", }}>Looking for : {data.Lookingfor}</AppText>
         </View>
+    
         <View style={{
           width: width / 1.1,
           justifyContent: 'space-evenly',
           marginTop: 10,
           backgroundColor: '#dfd6ef',
-
           marginHorizontal: 20,
           borderWidth: 1,
           borderColor: colors.main2,
           borderRadius: 13,
-          padding: 10
+          padding: 10,
+          // height:100
         }}>
           {/* <AppText>About me</AppText> */}
-          <AppText style={{ color: "black", textAlign: 'center' }}>{data.About}</AppText>
+          
+          <AppText style={{ color: "black", textAlign: 'center'}}>{data.About.trim()}</AppText>
         </View>
       </ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.1, marginHorizontal: 20 }}>

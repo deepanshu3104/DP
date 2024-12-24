@@ -16,6 +16,7 @@ import { styles } from "./style";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import LinearGradient from "react-native-linear-gradient";
 
 const Home: React.FC<InitialProps> = (props) => {
 
@@ -38,10 +39,21 @@ const Home: React.FC<InitialProps> = (props) => {
           )}
         </View>
         {item.favourite && <MaterialIcons name={"star"} size={20} color={'#FFD700'} style={{ position: 'absolute', top: 5, right: 5 }} />}
-        <View style={{ flexDirection: 'row', position: 'absolute', alignItems: 'center', bottom: 5, width: width / 3.05, justifyContent: 'space-evenly' }}>
-          <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
-          <AppText style={{ width: width / 3.8, color: 'black', fontWeight: '600' }}>{item.name}</AppText>
-        </View>
+        {/* <View style={{ flexDirection: 'row', position: 'absolute', alignItems: 'center', bottom: 5, width: width / 3.05, justifyContent: 'space-evenly' }}> */}
+
+        <LinearGradient colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']} style={{
+          flexDirection: 'row',
+          position: 'absolute',
+          height: 35,
+          alignItems:'center',
+          bottom: 1,
+          left:1,
+          width:width/1
+        }}>
+          <MaterialIcons name={"circle"} size={15} color={'green'} style={{marginHorizontal:5}} />
+          <AppText style={{color: 'black', fontWeight: '600' }}>{item.name}</AppText>
+        </LinearGradient>
+        {/* </View> */}
       </TouchableComponent>
     );
   }
@@ -94,7 +106,7 @@ const Home: React.FC<InitialProps> = (props) => {
     <Wrapper>
       <View style={styles.headerview}>
         <Text style={styles.headertext}>Datify</Text>
-        <View style={{flexDirection:'row',justifyContent:'space-between',width:width/5.5}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 5.5 }}>
           <Fontisto
             name={"heart"}
             size={25}
