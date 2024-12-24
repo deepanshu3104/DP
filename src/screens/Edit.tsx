@@ -1,8 +1,8 @@
-import { Alert, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
-import { Commonbtn, Wrapper, Header, Loadingcomponent } from "../utilities/Helpers";
+import { Commonbtn, Wrapper, Header, Loadingcomponent, TouchableComponent } from "../utilities/Helpers";
 import { InitialProps } from "../utilities/Props";
-import { colors, fonts, Gender, width } from "../utilities/constants";
+import { colors, fonts, Gender, Realtion, width } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
 import { Images } from "../utilities/Images";
 import { useFormik } from "formik";
@@ -13,6 +13,7 @@ import { DropInput } from "../utilities/DropInput";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "./Loading";
+import { Image } from "react-native";
 
 
 const Edit: React.FC<InitialProps> = (props) => {
@@ -50,10 +51,12 @@ const Edit: React.FC<InitialProps> = (props) => {
       showme: "",
       email: "",
       password: "",
+      Lookingfor: "",
+      About: ""
 
     },
     validationSchema: registerSchema,
-    onSubmit: () => { update() },
+    onSubmit: () => { update(), Alert.alert('hello') },
   });
   const handleAdd = async () => {
     setLoading(true)
@@ -65,6 +68,8 @@ const Edit: React.FC<InitialProps> = (props) => {
       await formik.setFieldValue('dob', data.dob)
       await formik.setFieldValue('gender', data.gender)
       await formik.setFieldValue('showme', data.showme)
+      await formik.setFieldValue('Lookingfor', data.Lookingfor)
+      await formik.setFieldValue('About', data.About)
       setLoading(false)
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -90,6 +95,8 @@ const Edit: React.FC<InitialProps> = (props) => {
         dob: formik.values.dob,
         gender: formik.values.gender,
         showme: formik.values.showme,
+        Lookingfor: formik.values.Lookingfor,
+        About: formik.values.About,
       });
       setLoading(false)
       console.log('ended');
@@ -112,6 +119,10 @@ const Edit: React.FC<InitialProps> = (props) => {
     });
     setFocus([...focus]);
   }
+
+  let err = ''
+  const errorspacing = err || 'no';
+
   return (
     <Wrapper>
       {loading && <Loadingcomponent />}
@@ -218,11 +229,87 @@ const Edit: React.FC<InitialProps> = (props) => {
           }
           label="label"
         />
+        <DropInput
+          data={Realtion}
+          placeholder="Looking For"
+          imgsrc={Images.search}
+          value={formik.values.Lookingfor}
+          onChange={(item: any) => {
+            formik.setFieldValue("Lookingfor", item.label);
+          }}
+          error={
+            formik.touched.Lookingfor && formik.errors.Lookingfor
+              ? formik.errors.Lookingfor
+              : ""
+          }
+          errorspacing={
+            formik.touched.Lookingfor && formik.errors.Lookingfor ? "yes" : "no"
+          }
+          label="label"
+        />
+        <View>
+          <View style={{
+            position: 'relative',
+            alignSelf: 'center',
+            // justifyContent: 'center',
+            shadowColor: colors.main2,
+            shadowOpacity: 0.5,
+            shadowRadius: 2,
+            borderColor: colors.main2,
+            shadowOffset: { width: 0, height: 0 },
+            borderWidth: 1,
+            height: 95,
+            backgroundColor: colors.main1,
+            borderRadius: 12,
+            flexDirection: 'row',
+            // alignItems: 'center',
+            width: width / 1.15,
+            elevation: 5,
+            paddingLeft: 15,
+          }}>
 
 
+            <TextInput
+              style={{
+                // fontFamily: Fonts.Regular,
+                color: "black",
+                fontSize: 14,
+                marginLeft: 8,
+
+              }} value={formik.values.About}
+              onFocus={() => {
+                DoFocus("About");
+              }}
+
+              textAlignVertical='top'
+              placeholder="Describe Yourself"
+              onChangeText={formik.handleChange("About")}
+              onBlur={formik.handleBlur("About")}
+            /></View>
+          <Text
+            style={{
+              fontSize: 12,
+              color: colors.red,
+              marginVertical: errorspacing === 'yes' ? 10 : 2,
+              left: 15,
+            }}
+          >
+            {
+              formik.touched.About && formik.errors.About
+                ? formik.errors.About
+                : ""
+            }
+
+          </Text>
+        </View>
+
+        <Text>{formik.errors.Lookingfor}</Text>
         <Commonbtn
           title="Continue"
-          onPress={formik.handleSubmit}
+          onPress={() => {
+            console.log('start');
+            formik.handleSubmit()
+          }}
         />
         <DateTimePickerModal
           isVisible={datepickermodal}

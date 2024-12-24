@@ -6,6 +6,6 @@ export const Cstyles = StyleSheet.create({
     
         alignSelf:'center',
         color:'black',
-        fontSize:25
+        fontSize:20
     }
 })

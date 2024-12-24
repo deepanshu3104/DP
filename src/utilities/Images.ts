@@ -8,6 +8,7 @@ export const Images = {
     pencil: require('./assets/pencil.png'),
     gender: require('./assets/gender.png'),
     chat: require('./assets/chat.png'),
+    search: require('./assets/search.png'),
 
 }
 

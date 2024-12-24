@@ -36,7 +36,14 @@ export const registerSchema = yup.object().shape({
     .string()
     .required('Please enter your Password')
     .trim('Please enter your Password')
-    .min(6, "Password must contain atleast 6 chsracters")
- 
+    .min(6, "Password must contain atleast 6 chsracters"),
+ Lookingfor: yup
+    .string()
+    .required('Please select your Lookingfor')
+    .trim('Please select your Lookingfor'),
+ About: yup
+    .string()
+    .required('Please select your About')
+    .trim('Please select your About'),
 
 });

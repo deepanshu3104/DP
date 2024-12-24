@@ -4,6 +4,7 @@ import {
   AppText,
   Commonbtn,
   ImageComponent,
+  Loadingcomponent,
   SpaceComponent,
   TouchableComponent,
   WrapperNoScroll,
@@ -34,8 +35,10 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
   const [liked, setLiked] = useState(false);
   const [matched, setMatched] = useState(false)
   const [age, setAge] = useState('');
+  const [loading, setLoading] = useState(false)
+  const [favourite, setFavourite] = useState(false)
   useEffect(() => { handleConfirm() }, [])
-
+  // useEffect(() => { fetchProducts() }, [favourite])
 
   const handleConfirm = () => {
     const data = props.route.params.data;
@@ -74,6 +77,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
 
       });
 
+
       console.log('user data==>>>>', dataa);
 
       const firstUserRef = firestore().collection('Users').doc(uid);
@@ -91,8 +95,9 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
 
   const fav = async () => {
     try {
+      setFavourite(false);
       const querySnapshot = await firestore().collection('Users').get();
-      const uid: any = await AsyncStorage.getItem('uid')
+      const uid: any = await AsyncStorage.getItem('uid');
       let dataa: any = [];
       querySnapshot.forEach(documentSnapshot => {
         if (documentSnapshot.id == uid) {
@@ -102,42 +107,61 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           });
         }
       });
-      const firstUserRef = firestore().collection('Users').doc(uid);
-      await firstUserRef.update({
-        favourite: [...dataa[0].favourite, data.id]
-      });
 
-      console.log('done');
-      setBlockModal(false)
-      Alert.alert("added")
+      const firstUserRef = firestore().collection('Users').doc(uid);
+      const user = dataa[0]; // The user's data
+      const isAlreadyFav = user.favourite.includes(data.id); // Check if the item is already in favourites
+
+      if (isAlreadyFav) {
+        // Remove the item from favourites
+        const updatedFavourites = user.favourite.filter((itemId: any) => itemId !== data.id);
+        await firstUserRef.update({
+          favourite: updatedFavourites,
+        });
+        setFavourite(false); // Set to normal star
+        Alert.alert("Removed from favourites");
+      } else {
+        // Add the item to favourites
+        await firstUserRef.update({
+          favourite: [...user.favourite, data.id],
+        });
+        setFavourite(true); // Set to golden star
+        Alert.alert("Added to favourites");
+      }
+
+      console.log('Done');
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
 
 
+
+
+
   const like = async () => {
 
     try {
-
+      setLoading(true)
       const uid: any = await AsyncStorage.getItem('uid')
       const firstUserRef = firestore().collection('Users').doc(data.id);
       await firstUserRef.update({
         likes: [...data.likes, uid]
       });
 
-
+      setLoading(false)
       console.log('done');
 
 
     } catch (error) {
       console.error('Error:', error);
-
+      setLoading(false)
     }
   };
 
   async function GetData() {
     try {
+      setLoading(true)
       const uid: any = await AsyncStorage.getItem('uid')
       const data = props.route.params.data;
       const querySnapshot = await firestore().collection('Users').where("id", "==", uid).get();
@@ -151,90 +175,112 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
 
       if (likes.includes(data.id)) {
         setLiked(true)
+        setLoading(false)
       }
     } catch (error) {
       console.error('Error:', error);
+      setLoading(false)
     }
   }
   const Matches = async () => {
     try {
-      // Get the current user ID and the other person's ID
       const currentUserId = await AsyncStorage.getItem('uid');
       const otherUserId = data.id;
-  
+
       if (!currentUserId || !otherUserId) {
         Alert.alert('Error', 'User ID is missing!');
         return;
       }
-  
-      // Get the reference to the Matches collection
+
       const matchesRef = firestore().collection('Matches');
-  
-      // Check if a match already exists for this combination
       const querySnapshot = await matchesRef
         .where('userid', '==', currentUserId)
         .get();
-  
+
       if (querySnapshot.empty) {
-        // Create a new match document since it doesn't exist
+        // No existing document, create a new match document
         const newMatch = {
-          users:  [otherUserId], // Store both user IDs in an array
-          timestamp: firestore.FieldValue.serverTimestamp(), // Track when the match occurred
-          userid: currentUserId, // Optionally track who initiated the match
+          users: [otherUserId],
+          timestamp: firestore.FieldValue.serverTimestamp(),
+          userid: currentUserId,
         };
-  
+
         await matchesRef.add(newMatch);
-  
-        // Show a success message
         Alert.alert('Hurray', 'Matched successfully!');
       } else {
-        // Match already exists
-        
-        
+        // Update existing match document
+        const doc = querySnapshot.docs[0];
+        const matchData = doc.data();
+        const existingUsers = matchData.users || [];
+
+        if (!existingUsers.includes(otherUserId)) {
+          await matchesRef.doc(doc.id).update({
+            users: firestore.FieldValue.arrayUnion(otherUserId),
+          });
+          Alert.alert('Hurray', 'Matched successfully!');
+        } else {
+          Alert.alert('Info', 'You are already matched with this user!');
+        }
       }
     } catch (error) {
-      // If there’s an error, show an error message
       console.error('Error creating match:', error);
       Alert.alert('Error', 'Something went wrong!');
     }
   };
-  
+
+
   async function GetMatchedData() {
     try {
-      const uid: any = await AsyncStorage.getItem('uid')
+      setLoading(true)
+      const uid = await AsyncStorage.getItem('uid');
+      const querySnapshot = await firestore()
+        .collection('Matches')
+        .where('userid', '==', uid)
+        .get();
 
-      const querySnapshot = await firestore().collection('Matches').where('userid', '==', uid).get();
-      const userData: any = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      if (!querySnapshot.empty) {
+        const userData: any = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      const matched = userData[0].users
-      console.log(matched, " hlooooooooo");
+        const matchedUsers = userData[0].users;
+        console.log(matchedUsers, "Matched Users:");
 
-      if (matched.includes(data.id)) {
-        console.log('hiiii');
-        setMatched(true)
+        if (matchedUsers.includes(data.id)) {
+          console.log('Matched!');
+          setMatched(true);
+          setLoading(false)
+        } else {
+          console.log('Not matched yet!');
+          setLoading(false)
+        }
+      } else {
+        console.log('No matches found for the current user.');
+        setLoading(false)
       }
     } catch (error) {
-      console.error('Error1234654:', error);
+      console.error('Error retrieving matches:', error);
+      setLoading(false)
     }
   }
+
   const Button = () => {
     if (matched) {
-      return <Commonbtn title="Already matched" onPress={() => { }} />;
+      return <Commonbtn title="Already matched 💏" onPress={() => { }} />;
     } else if (liked) {
       return <Commonbtn title="I Like You 2 ❤️" onPress={() => { Matches(); }} />;
     } else {
       return <Commonbtn title="I Like You ❤️" onPress={() => { like(); }} />;
     }
   };
-  
-// useEffect(() => { button() }, [])
+
+  // useEffect(() => { button() }, [])
 
 
   return (
     <WrapperNoScroll>
+      {loading && <Loadingcomponent />}
       <View style={{ ...styles.headerSView, ...styles.headerView1 }}>
         <Ionicons
           name={"chevron-back"}
@@ -251,7 +297,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             color={colors.main2}
             onPress={() => { setBlockModal(true) }}
           />
-          {data.favourite ? <MaterialIcons name={"star"} size={35} color={'#FFD700'} style={{ position: 'absolute', right: 5 }} />
+          {/* {data.favourite || favourite ? <MaterialIcons name={"star"} size={35} color={'#FFD700'} style={{ position: 'absolute', right: 2 }} />
             : <Icon
               name={"star-outline"}
               size={35}
@@ -259,7 +305,11 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
               onPress={() => {
                 fav()
               }}
-            />}
+            />} */}
+          <TouchableComponent onPress={() => fav()}>
+            <Icon name={data.favourite ? 'star' : 'star-outline'} size={30} color={data.favourite ? '#FFD700' : '#6A5ACD'} />
+          </TouchableComponent>
+
         </View>
       </View>
       <ScrollView>
@@ -306,7 +356,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           alignSelf: 'center',
           marginTop: 20,
           backgroundColor: '#dfd6ef',
-          height: 70,
+          height: 50,
           alignItems: 'center',
           marginHorizontal: 20,
           borderWidth: 1,
@@ -330,14 +380,56 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             {data.gender}</AppText>
 
         </View>
-        <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'center', marginTop: 20 }}>
+        <View style={{
+          flexDirection: 'row',
+          width: width / 4,
+          // justifyContent: 'space-around',
+          marginTop: 10,
+          backgroundColor: '#dfd6ef',
+          height: 35,
+          alignItems: 'center',
+          marginHorizontal: 20,
+          borderWidth: 1,
+          borderColor: colors.main2,
+          borderRadius: 13,
+          padding: 2
+        }}>
           <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
-          <AppText>Online Now</AppText>
+          <AppText style={{ color: "black" }}> Online Now</AppText>
+        </View>
+        <View style={{
+          padding: 10,
+          justifyContent: 'center',
+          marginTop: 10,
+          backgroundColor: '#dfd6ef',
+          // height: 35,
+          alignSelf: 'flex-start',
 
+          marginHorizontal: 20,
+          borderWidth: 1,
+          borderColor: colors.main2,
+          borderRadius: 13,
+        }}>
+          <AppText style={{ color: "black", }}>Looking for : {data.Lookingfor}</AppText>
+        </View>
+        <View style={{
+          width: width / 1.1,
+          justifyContent: 'space-evenly',
+          marginTop: 10,
+          backgroundColor: '#dfd6ef',
+
+          marginHorizontal: 20,
+          borderWidth: 1,
+          borderColor: colors.main2,
+          borderRadius: 13,
+          padding: 10
+        }}>
+          {/* <AppText>About me</AppText> */}
+          <AppText style={{ color: "black", textAlign: 'center' }}>{data.About}</AppText>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.2, marginHorizontal: 30 }}>
-      {Button()}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.1, marginHorizontal: 20 }}>
+        {Button()}
         <TouchableComponent onPress={() => props.navigation.navigate('Chat', { data: data })}>
           <View style={{
             minHeight: 50,

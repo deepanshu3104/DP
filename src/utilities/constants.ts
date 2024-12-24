@@ -22,3 +22,12 @@ export const Gender = [
   {key:2,label:'Female'},
   {key:3,label:'Other'}
 ]
+
+export const Realtion = [
+  {key:1,label:'Casual Dating'},
+  {key:2,label:'Long-Term Relationship'},
+  {key:3,label:'Marriage'},
+  {key:4,label:'Friendship'},
+  {key:5,label:'Short-Term Fun'},
+  {key:6,label:'Travel Buddy'}
+]

@@ -10,10 +10,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Notification: React.FC<InitialProps> = (props) => {
 
     const [products, setProducts] = useState<any>([]);
+    const [data, setData] = useState<any>([]);
     const [loading, setLoading] = useState<any>(false);
 
     useEffect(() => {
         fetchUsers()
+        matchedata()
     }, [])
     const fetchUsers = async () => {
         try {
@@ -79,6 +81,40 @@ const Notification: React.FC<InitialProps> = (props) => {
             </TouchableComponent>
         )
     }
+
+    const matchedata = async () => {
+        try {
+            const uid: any = await AsyncStorage.getItem('uid')
+            // Query Firestore for users whose IDs match the array
+            const querySnapshot = await firestore().collection('Matches').where("userid", "==", uid).get();
+            const userData: any = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            console.log(userData, "matched");
+
+            let matches = userData[0].users
+            console.log(matches,"match  hogya ");
+
+
+            const usersSnapshot = await firestore()
+                .collection('Matches')
+                .where(firestore.FieldPath.documentId(), 'in', matches)
+                .get();
+
+            // Extract user data from documents
+            const userData1 = usersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setData(userData1);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Wrapper>
             <Header title='Notification' onPress={() => props.navigation.goBack()} />
