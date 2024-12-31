@@ -10,30 +10,16 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { TextInput } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Icon from 'react-native-vector-icons/Feather';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const data = [
-  {
-    "message": "Just checking in!",
-    "sentBy": "0",
-    "timestamp": "2024-09-13T10:30:00Z",
-  },
-  {
-    "message": "Don't forget to review the document.",
-    "sentBy": "1",
-    "timestamp": "2024-09-15T18:47:00Z",
-  },
-  {
-    "message": "Looking forward to our meeting.",
-    "sentBy": "0",
-    "timestamp": "2024-09-15T18:47:00Z",
-  },
-]
 
 interface Message {
   message: string;
   sentBy: string;
-  timestamp: string;
+  createdAt: string;
   showDate?: string;
+  timeString?: string
 }
 
 interface MessageProps {
@@ -44,20 +30,132 @@ interface MessageProps {
 
 const Chat: React.FC<InitialProps> = (props) => {
 
+
+
   const routedData = props.route.params.data
 
+  useEffect(() => {
+    console.log("useEffect")
+
+    fetchChatMessages();
+  }, []);
+
+  const fetchChatMessages = async () => {
+    try {
+      const myUid: any = await AsyncStorage.getItem('uid')
+      setUid(myUid)
+      const otherUid: any = routedData.id
+      
+      const docId =
+      otherUid > myUid ? `${myUid}_${otherUid}` : `${otherUid}_${myUid}`;
+      
+      console.log(docId,('.....................'));
+      const messageRef = firestore()
+      .collection('Chat')
+      .doc(docId)
+      .collection('messages')
+      .orderBy('createdAt', 'asc');
+
+      const unSubscribe = messageRef.onSnapshot(querySnap => {
+        const allMessages:any = querySnap.docs.map(docSnap => {
+          const data1 = docSnap.data();
+          console.log(data1,"dee[");
+          
+          const timestamp = data1.createdAt.toDate();
+          const date = formatTime(timestamp);
+          const hours = timestamp.getHours();
+          const minutes = timestamp.getMinutes();
+          const ampm = hours >= 12 ? 'pm' : 'am';
+          const formattedHours = hours % 12 || 12;
+
+          const timeString = `${formattedHours}:${minutes
+            .toString()
+            .padStart(2, '0')} ${ampm}`;
+
+          return {
+            ...data1,
+            timeString,
+            date,
+            showDate:categorizeDate(data1.createdAt.toDate())
+          };
+        });
+        console.log(allMessages,'alll');
+        
+        setMessages(allMessages);
+      });
+
+      return () => {
+        unSubscribe();
+      };
+    } catch (error) {
+      console.error('Error fetching chat messages:', error);
+    }
+  };
+  const formatTime = (timestamp:any) => {
+    const currentDate :any = new Date();
+    const targetDate :any= new Date(timestamp);
+    const timeDiff = currentDate - targetDate;
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+    if (
+      targetDate.getDate() === currentDate.getDate() &&
+      targetDate.getMonth() === currentDate.getMonth() &&
+      targetDate.getFullYear() === currentDate.getFullYear()
+    ) {
+      return 'Today';
+    } else if (daysDiff === 1) {
+      return 'Yesterday';
+    } else {
+      const options = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      };
+      const formattedDate = targetDate.toLocaleDateString(undefined, options);
+      const [month, day, year] = formattedDate.split('/');
+      return `${day}/${month}/${year}`;
+    }
+  };
+
   const [messages, setMessages] = useState<Message[]>([]);
+  const [uid, setUid] = useState<any>('');
+  const [message, setMessage] = useState<any>('');
+
+
 
   useEffect(() => {
-    SetDate()
+    // SetDate()
+  
+
   }, [])
 
-  function SetDate() {
-    const updatedMessages = data.map((item) => ({
-      ...item,
-      showDate: categorizeDate(item.timestamp),
-    }));
-    setMessages(updatedMessages);
+
+
+  async function OnSend(message:any){
+    const sentBy: any = await AsyncStorage.getItem('uid')
+    const sentTo: any = routedData.id
+
+    const docid = sentTo > sentBy ? sentBy + '_' + sentTo : sentTo + '_' + sentBy;
+
+  const msgRef = firestore()
+    .collection('Chat')
+    .doc(docid)
+    .collection('messages');
+
+  const newmsgRef = msgRef.doc();
+  const msgId = newmsgRef.id;
+
+  let mymsg = {
+    messageId: msgId,
+    type: 'text',
+    message: message,
+    sentBy: sentBy,
+    sentTo: sentTo,
+    createdAt: new Date()
+  };
+
+  await newmsgRef.set(mymsg);
+  setMessage('')
   }
 
 
@@ -66,20 +164,22 @@ const Chat: React.FC<InitialProps> = (props) => {
       <ChatHeader data={routedData} onPress={() => { props.navigation.goBack() }} />
       <FlatList
         data={messages}
-        renderItem={renderItem}
+        renderItem={({item})=>renderItem(item,uid)}
         keyExtractor={(item: Message, index: number) => index.toString()}
       />
-     <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder="Type a message..."
-        value={''}
-        onChangeText={()=>{}}
-      />
-      <TouchableComponent style={styles.sendButton} onPress={()=>{}}>
-        <Icon name="send" size={25} color="white" />
-      </TouchableComponent>
-    </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Type a message..."
+          value={message}
+          onChangeText={(text) => { setMessage(text)}}
+        />
+        <TouchableComponent style={styles.sendButton} onPress={() => {
+          OnSend(message)
+         }}>
+          <Icon name="send" size={25} color="white" />
+        </TouchableComponent>
+      </View>
     </WrapperNoScroll>
   );
 };
@@ -114,83 +214,101 @@ function ChatHeader({ data, onPress }: { data: any, onPress: () => void }) {
   );
 }
 
-function renderItem({ item }: any) {
-  if (item.sentBy == 0) {
-    return <MyMsg item={item} />
-  } else {
-    return <OtherMsg item={item} />
-  }
+let prevDate : any = '';
+
+function renderItem(item: Message, uid: string) {
+  const showDate  = item.showDate !== prevDate; // Compare the current message date with the previous one.
+  if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
+
+  return (
+    <Message
+      item={item}
+      show={showDate}
+      mine={item.sentBy === uid}
+    />
+  );
 }
 
-let prevDate = ''
+
+
 
 function MyMsg({ item }: any) {
-  if (prevDate == item.showDate) {
-    return (
-      <Message item={item} show={false} mine={true} />
-    )
-  } else {
-    prevDate = item.showDate;
-    return (
-      <Message item={item} show={true} mine={true} />
-    )
-  }
+  const showDate = prevDate !== item?.showDate; // Compare the current message date with the previous one.
+  if (showDate) prevDate = item?.showDate; // Update prevDate if the current date is different.
 
+  return <Message item={item} show={showDate} mine={true} />;
 }
+
 function OtherMsg({ item }: any) {
-  if (prevDate == item.showDate) {
-    return (
-      <Message item={item} show={false} mine={false} />
-    )
-  } else {
-    prevDate = item.showDate;
-    return (
-      <Message item={item} show={true} mine={false} />
-    )
-  }
+  const showDate = prevDate !== item?.showDate;
+  if (showDate) prevDate = item?.showDate;
 
+  return <Message item={item} show={showDate} mine={false} />;
 }
 
-function Message({
-  item,
-  show,
-  mine
-}: MessageProps) {
+function Message({ item, show, mine }: MessageProps) {
   return (
     <>
-      {show && <Text style={{ marginBottom: 10, alignSelf: 'center', color: 'black', fontSize: width / 28 }}>{item.showDate}</Text>}
+      {show && item.showDate && (
+        <Text style={{
+          marginBottom: 10,
+          alignSelf: 'center',
+          color: 'gray',
+          fontSize: width / 28,
+        }}>
+          {item.showDate}
+        </Text>
+      )}
       <View style={{
         alignSelf: mine ? 'flex-end' : 'flex-start',
-        alignItems: mine ? 'flex-end' : 'flex-start',
-        marginRight: mine ? 15 : 0,
-        marginLeft: mine ? 0 : 15,
-        width: width / 1.7,
-        marginBottom: 10
+        marginHorizontal: 15,
+        maxWidth: width / 1.7,
+        marginBottom: 10,
       }}>
-        <View style={{ backgroundColor: colors.main2, padding: 10, borderRadius: 15, borderBottomRightRadius: mine ? 0 : 15, borderBottomLeftRadius: mine ? 15 : 0 }}>
-          <Text style={{ color: 'white' }}>{item.message}</Text>
+        <View style={{
+          backgroundColor: mine ? colors.main2 : '#f1f1f1',
+          padding: 10,
+          borderRadius: 15,
+          borderBottomRightRadius: mine ? 0 : 15,
+          borderBottomLeftRadius: mine ? 15 : 0,
+        }}>
+          <Text style={{ color: mine ? 'white' : 'black' }}>{item.message}</Text>
         </View>
-        <Text>{moment(item.timestamp).format("hh:mm A")}</Text>
+        <Text style={{
+          color: 'gray',
+          fontSize: width / 32,
+          marginTop: 5,
+          alignSelf: 'flex-end',
+        }}>
+          {item.timeString}
+        </Text>
       </View>
     </>
-  )
+  );
 }
 
-const categorizeDate = (dateString: string) => {
-  const date = new Date(dateString);
+
+const categorizeDate = (timestamp: string | Date) => {
+  const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
-  const dateStartOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  if (dateStartOfDay.getTime() === today.getTime()) {
+
+  const messageDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  if (messageDay.getTime() === today.getTime()) {
     return 'Today';
-  } else if (dateStartOfDay.getTime() === yesterday.getTime()) {
+  } else if (messageDay.getTime() === yesterday.getTime()) {
     return 'Yesterday';
   } else {
-    return date.toLocaleDateString();
+    return `${messageDay.toLocaleDateString('en-GB')}`; // Format: DD/MM/YYYY
   }
 };
+
+
+
+
 
 
 

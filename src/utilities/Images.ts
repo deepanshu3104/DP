@@ -9,6 +9,12 @@ export const Images = {
     gender: require('./assets/gender.png'),
     chat: require('./assets/chat.png'),
     search: require('./assets/search.png'),
+    a: require('./assets/1.png'),
+    b: require('./assets/2.png'),
+    c: require('./assets/3.png'),
+    d: require('./assets/4.png'),
+    e: require('./assets/5.png'),
+    f: require('./assets/6.png'),
 
 }
 

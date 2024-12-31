@@ -1,5 +1,5 @@
 import { Alert, FlatList, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ImageComponent,
   TouchableComponent,
@@ -11,8 +11,55 @@ import { colors } from "../../utilities/constants";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import ChatFilter from "../../modals/ChatFilter";
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Inbox: React.FC<InitialProps> = (props) => {
+
+  // useEffect(() => {
+  //   User()
+  // }, [])
+
+
+
+  // const User = async () => {
+  //   try {
+  //     // Get current user's UID from AsyncStorage
+  //     const uid: any = await AsyncStorage.getItem('uid');
+  //     console.log(uid, ".......,,,,,,,,,,,,,");
+
+  //     let dataa: string[] = [];
+  //     const chatSnapshot = await firestore().collection('Chat').get();
+  //     for (const chatDoc of chatSnapshot.docs) {
+  //       const chatDocId = chatDoc.id;
+  //       const messagesSnapshot = await firestore()
+  //         .collection('Chat')
+  //         .doc(chatDocId)
+  //         .collection('messages')
+  //         .get();
+
+  //       messagesSnapshot.forEach((messageDoc) => {
+  //         const messageData = messageDoc.data();
+
+  //         if (messageData.sentBy === uid && !dataa.includes(messageData.sentTo)) {
+  //           dataa.push(messageData.sentTo);
+  //         } else if (messageData.sentTo === uid && !dataa.includes(messageData.sentBy)) {
+  //           dataa.push(messageData.sentBy);
+  //         }
+  //       });
+  //     }
+
+  //     console.log('Unique user data:', dataa);
+  //     console.log('Done fetching chat users.');
+
+  //   } catch (error) {
+  //     console.error('Error fetching user data:', error);
+  //   }
+  // };
+
+
+
+
   const [filterModal, setFilterModal] = useState(false);
   return (
     <Wrapper>

@@ -64,4 +64,22 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
+  cbtn1: {
+    minHeight: width/1.65,
+    top: 10,
+    alignSelf: 'center',
+    borderRadius: 8,
+    width: width / 2.1,
+    backgroundColor: colors.main2,
+    justifyContent: 'center',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  cbtntxt1: {
+    color: colors.main1,
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+
+  },
 })

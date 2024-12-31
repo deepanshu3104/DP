@@ -88,3 +88,9 @@ export interface HeaderProps{
   onPress?: () => void;
   title?:string
 }
+export interface CommonExploreProps {
+  onPress?: () => void;
+  title?: string;
+  opacity?: number;
+  source?: Source;
+}

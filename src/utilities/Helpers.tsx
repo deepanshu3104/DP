@@ -3,7 +3,7 @@ import React from 'react'
 import { styles } from './styles'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal';
-import { AppTextProps, CommonbtnProps, HeaderProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
+import { AppTextProps, CommonbtnProps, CommonExploreProps, HeaderProps, ImageComponentProps, TouchableComponentProps, TouchableImageProps, TouchableTextProps, WrapperProps } from './Props'
 import { colors, fonts } from './constants';
 import { useNavigation } from '@react-navigation/native';
 import { Images } from './Images';
@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
   onPress, title
 }: any) => {
   return (
-    <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 20, alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', marginTop: 0, marginHorizontal: 10, alignItems: 'center' }}>
       <Ionicons
         name={"chevron-back"}
         size={35}
@@ -190,8 +190,24 @@ export const Header: React.FC<HeaderProps> = ({
         fontFamily: fonts.playregular,
         color: "#6A5ACD",
         fontSize: 30,
-        marginHorizontal: 20
+        marginHorizontal: 10
       }}>{title}</Text>
     </View>
+  );
+};
+export const CommonExplore: React.FC<CommonExploreProps> = ({
+  onPress,
+  title,
+  opacity,
+  source,
+}) => {
+  return (
+    <TouchableComponent
+      style={{ ...styles.cbtn1, opacity: opacity } as ViewStyle}
+      activeOpacity={1}
+      onPress={onPress}>
+        <ImageComponent source={source} style={{height:60,width:60,bottom:10}} resizeMode='contain'/>
+      <AppText style={styles.cbtntxt1}>{title}</AppText>
+    </TouchableComponent>
   );
 };

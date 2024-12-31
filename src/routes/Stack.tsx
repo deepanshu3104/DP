@@ -13,6 +13,7 @@ import Blocked from '../screens/Blocked';
 import Favourites from '../screens/Favourites';
 import Edit from '../screens/Edit';
 import Notification from '../screens/Notification';
+import Lookingfor from '../screens/Lookingfor';
 
 const stack = createNativeStackNavigator<ParamListBase>();
 
@@ -31,6 +32,7 @@ const Stack = () => {
           <stack.Screen name="Favourites" component={Favourites} />
           <stack.Screen name="Edit" component={Edit} />
           <stack.Screen name="Notification" component={Notification} />
+          <stack.Screen name="Lookingfor" component={Lookingfor} />
         </stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
