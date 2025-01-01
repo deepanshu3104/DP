@@ -13,7 +13,7 @@ const routes = [
   { key: "first", title: "Home", icon: "home" },
   { key: "second", title: "Explore", icon: "world" },
   { key: "third", title: "Inbox", icon: "hipchat" },
-  { key: "fourth", title: "Profile", icon: "home" },
+  { key: "fourth", title: "Profile", icon: "person" },
 ];
 
 const Tab: React.FC<any> = (props) => {

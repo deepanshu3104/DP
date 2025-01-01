@@ -2,7 +2,7 @@ import { View, Text, FlatList, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
 import firestore from '@react-native-firebase/firestore';
-import { AppText, Wrapper, Header } from '../utilities/Helpers';
+import { AppText, Wrapper, Header, TouchableComponent } from '../utilities/Helpers';
 import { colors, width } from '../utilities/constants';
 
 
@@ -42,6 +42,8 @@ const Lookingfor = (props :any) => {
 
     function lookingfor({ item }: any) {
       return (
+                    <TouchableComponent onPress={() => { props.navigation.navigate('OtherProfile', { data: item }) }}>
+        
         <View style={{
           marginTop: 20,
           flexDirection: 'row',
@@ -61,6 +63,7 @@ const Lookingfor = (props :any) => {
             fontWeight: '400'
           }}>{item.name}</AppText>
         </View>
+        </TouchableComponent>
       )
     }
     return (
@@ -71,7 +74,7 @@ const Lookingfor = (props :any) => {
                        color: "#6A5ACD",
                        fontSize: 40,
                        marginHorizontal:20}}>Blocked</Text> */}
-        <FlatList data={products} renderItem={lookingfor} />
+        <FlatList data={products} renderItem={lookingfor}  />
         {/* <AppText style={{ textAlign: 'center', marginTop: 50 }}>No Data Found</AppText> */}
       </Wrapper>
 

@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   cbtn1: {
-    minHeight: width/1.65,
+    minHeight: width/1.8,
     top: 10,
     alignSelf: 'center',
     borderRadius: 8,

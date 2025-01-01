@@ -132,6 +132,13 @@ const Chat: React.FC<InitialProps> = (props) => {
 
 
   async function OnSend(message:any){
+    const trimmedMessage = message.trim(); 
+
+   
+    if (!trimmedMessage) {
+      console.log("Cannot send an empty message.");
+      return;
+    }
     const sentBy: any = await AsyncStorage.getItem('uid')
     const sentTo: any = routedData.id
 
@@ -196,7 +203,7 @@ function ChatHeader({ data, onPress }: { data: any, onPress: () => void }) {
       <View style={{ width: width / 1.3, flexDirection: 'row', alignItems: 'center' }}>
         {data?.images?.length !== 0 ?
           <View style={styles.messageImageView}>
-            <ImageComponent source={{ uri: data.images[0] }} style={{
+            <ImageComponent source={{ uri: data?.images[0] }} style={{
               width: 35,
               height: 35,
               borderRadius: 8,
