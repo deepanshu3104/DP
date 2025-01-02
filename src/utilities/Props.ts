@@ -93,4 +93,5 @@ export interface CommonExploreProps {
   title?: string;
   opacity?: number;
   source?: Source;
+  onLongPress?: () => void;
 }

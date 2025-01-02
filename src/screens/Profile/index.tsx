@@ -128,7 +128,7 @@ const Profile: React.FC<InitialProps> = (props) => {
 
       </View>
       <Card index={0} onPress={() => { props.navigation.navigate('Favourites', { favourite: products[0].favourite }) }} />
-      <Card index={1} onPress={() => { props.navigation.navigate('Blocked', { blocked: products[0].blocked }) }} />
+      <Card index={1} onPress={() => { props.navigation.navigate('Blocked', { blocked: products[0].blocked,id:products[0]?.id }) }} />
       {/* <Card index={2} onPress={() => { }} /> */}
       <Card index={3} onPress={() => { setLogoutModal(true) }} />
       <Card index={4} onPress={() => { setDeleteModal(true) }} />

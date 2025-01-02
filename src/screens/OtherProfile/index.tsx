@@ -84,7 +84,16 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       await firstUserRef.update({
         blocked: [...dataa[0].blocked, data.id]
       });
+      const sentBy: any = await AsyncStorage.getItem('uid')
+      const sentTo: any = data.id
+      const docid = sentTo > sentBy ? sentBy + '_' + sentTo : sentTo + '_' + sentBy;
+      console.log(docid, "chatssss vishu");
 
+      const msgRef = firestore()
+        .collection('Chat')
+        .doc(docid)
+        .delete()
+      console.log(msgRef, " chatssssssss deleted")
       console.log('done');
       setBlockModal(false)
       props.navigation.navigate('Home')
@@ -142,11 +151,6 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       console.error('Error fetching products:', error);
     }
   };
-
-
-
-
-
   const like = async () => {
 
     try {
@@ -235,8 +239,6 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       Alert.alert('Error', 'Something went wrong!');
     }
   };
-
-
   async function GetMatchedData() {
     try {
       setLoading(true)
@@ -272,7 +274,6 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
       setLoading(false)
     }
   }
-
   const Button = () => {
     if (matched) {
       return <Commonbtn title="Already matched 💏" onPress={() => { }} />;
@@ -420,7 +421,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         }}>
           <AppText style={{ color: "black", }}>Looking for : {data.Lookingfor}</AppText>
         </View>
-    
+
         <View style={{
           width: width / 1.1,
           justifyContent: 'space-evenly',
@@ -434,8 +435,8 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           // height:100
         }}>
           {/* <AppText>About me</AppText> */}
-          
-          <AppText style={{ color: "black", textAlign: 'center'}}>{data.About.trim()}</AppText>
+
+          <AppText style={{ color: "black", textAlign: 'center' }}>{data.About.trim()}</AppText>
         </View>
       </ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.1, marginHorizontal: 20 }}>

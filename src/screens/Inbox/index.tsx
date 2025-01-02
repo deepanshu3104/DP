@@ -1,12 +1,11 @@
 import { Alert, FlatList, Image, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
-  ImageComponent,
+
   TouchableComponent,
   Wrapper,
 } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
-import { profiles } from "../../utilities/data";
 import { colors, width } from "../../utilities/constants";
 import { styles } from "./style";
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -24,7 +23,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
   }, [])
 
   const [chatData, setChatData] = useState()
-
+  const [loading, setLoading] = useState(true);
 
   const GetChats = async () => {
 
@@ -48,6 +47,18 @@ const Inbox: React.FC<InitialProps> = (props) => {
             console.log("if part==>>")
             let otherUserId = a === user ? b : a;
             console.log('other id', otherUserId)
+            // Check if the user is in the blocked list
+            //   const blockedUsersSnapshot = await firestore()
+            //   .collection('Users')
+            //   // .doc('blocked')
+            //   // .collection('blocked')
+            //   .where('blocked[]', '==', otherUserId)
+            //   .get();
+
+            // if (!blockedUsersSnapshot.empty) {
+            //   console.log(`User ${otherUserId} is blocked. Skipping chat.`);
+            //   continue; // Skip this chat if the other user is blocked
+            // }
 
             const userSnapshot = await firestore()
               .collection('Users')
@@ -65,7 +76,6 @@ const Inbox: React.FC<InitialProps> = (props) => {
                 .limit(1)
                 .get();
               console.log(userData, 'userData');
-
               let lastMessage: any = null;
               let timeString = null;
               // console.log(messagesSnapshot._query._collectionPath._parts[1]);
@@ -103,6 +113,8 @@ const Inbox: React.FC<InitialProps> = (props) => {
     } catch (error) {
 
       console.error('Error fetching documents:', error);
+    } finally {
+      setLoading(false); // Set loading to false once data is fetched
     }
   };
 
@@ -113,10 +125,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
   const [filterModal, setFilterModal] = useState(false);
   return (
     <Wrapper>
-      <ShimmerPlaceHolder
-        LinearGradient={LinearGradient}
-        stopAutoRun
-      />
+
       <View style={styles.headerview}>
         <Text style={styles.headertext}>Inbox</Text>
         <Fontisto
@@ -126,19 +135,60 @@ const Inbox: React.FC<InitialProps> = (props) => {
           onPress={() => { setFilterModal(true) }}
         />
       </View>
-      <FlatList
-        data={chatData}
-        renderItem={({ item, index }) => (
-          <RenderItem
-            item={item}
-            index={index}
-            onPress={() => {
-              props.navigation.navigate("Chat", { data: item });
+      {loading ? [1, 2, 3, 4].map((item) => (
+        <View style={{
+          width: width / 1.05,
+          height: 80,
+          alignSelf: "center",
+          flexDirection: "row",
+          marginLeft: 40,
+          alignItems: "center",
+        }}>
+          <ShimmerPlaceHolder
+            LinearGradient={LinearGradient}
+            duration={2000}
+            style={{
+              height: width / 7.5,
+              width: width / 7.5,
+
+
+              borderRadius: 8
             }}
-          />
-        )}
-        keyExtractor={(item: any, index: number) => index.toString()}
-      />
+          /><View style={{ marginLeft: 10 }}>
+            <ShimmerPlaceHolder
+              LinearGradient={LinearGradient}
+              duration={2000}
+              style={{
+                height: 25,
+                width: width / 1.5,
+                borderRadius: 5
+              }}
+            />
+            <ShimmerPlaceHolder
+              LinearGradient={LinearGradient}
+              duration={2000}
+              style={{
+                height: 15,
+                width: width / 2.5,
+                borderRadius: 5,
+                marginTop: 5
+              }}
+            /></View>
+        </View>
+      )) :
+        <FlatList
+          data={chatData}
+          renderItem={({ item, index }) => (
+            <RenderItem
+              item={item}
+              index={index}
+              onPress={() => {
+                props.navigation.navigate("Chat", { data: item });
+              }}
+            />
+          )}
+          keyExtractor={(item: any, index: number) => index.toString()}
+        />}
       <ChatFilter isVisible={filterModal} onBackdropPress={() => setFilterModal(false)} onModalHide={() => {
         // Alert.alert('hiii')
       }} />

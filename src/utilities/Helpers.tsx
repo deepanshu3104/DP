@@ -200,12 +200,14 @@ export const CommonExplore: React.FC<CommonExploreProps> = ({
   title,
   opacity,
   source,
+  onLongPress
 }) => {
   return (
     <TouchableComponent
       style={{ ...styles.cbtn1, opacity: opacity } as ViewStyle}
       activeOpacity={1}
-      onPress={onPress}>
+      onPress={onPress}
+      onLongPress={onLongPress}>
         <ImageComponent source={source} style={{height:60,width:60,bottom:10}} resizeMode='contain'/>
       <AppText style={styles.cbtntxt1}>{title}</AppText>
     </TouchableComponent>

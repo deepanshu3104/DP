@@ -45,22 +45,22 @@ const Chat: React.FC<InitialProps> = (props) => {
       const myUid: any = await AsyncStorage.getItem('uid')
       setUid(myUid)
       const otherUid: any = routedData.id
-      
+
       const docId =
-      otherUid > myUid ? `${myUid}_${otherUid}` : `${otherUid}_${myUid}`;
-      
-      console.log(docId,('.....................'));
+        otherUid > myUid ? `${myUid}_${otherUid}` : `${otherUid}_${myUid}`;
+
+      console.log(docId, ('.....................'));
       const messageRef = firestore()
-      .collection('Chat')
-      .doc(docId)
-      .collection('messages')
-      .orderBy('createdAt', 'asc');
+        .collection('Chat')
+        .doc(docId)
+        .collection('messages')
+        .orderBy('createdAt', 'asc');
 
       const unSubscribe = messageRef.onSnapshot(querySnap => {
-        const allMessages:any = querySnap.docs.map(docSnap => {
+        const allMessages: any = querySnap.docs.map(docSnap => {
           const data1 = docSnap.data();
-          console.log(data1,"dee[");
-          
+          console.log(data1, "dee[");
+
           const timestamp = data1.createdAt.toDate();
           const date = formatTime(timestamp);
           const hours = timestamp.getHours();
@@ -76,11 +76,12 @@ const Chat: React.FC<InitialProps> = (props) => {
             ...data1,
             timeString,
             date,
-            showDate:categorizeDate(data1.createdAt.toDate())
+            showDate: categorizeDate(data1.createdAt.toDate()),
+
           };
         });
-        console.log(allMessages,'alll');
-        
+        console.log(allMessages, 'alll');
+
         setMessages(allMessages);
       });
 
@@ -91,9 +92,9 @@ const Chat: React.FC<InitialProps> = (props) => {
       console.error('Error fetching chat messages:', error);
     }
   };
-  const formatTime = (timestamp:any) => {
-    const currentDate :any = new Date();
-    const targetDate :any= new Date(timestamp);
+  const formatTime = (timestamp: any) => {
+    const currentDate: any = new Date();
+    const targetDate: any = new Date(timestamp);
     const timeDiff = currentDate - targetDate;
     const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
@@ -125,16 +126,16 @@ const Chat: React.FC<InitialProps> = (props) => {
 
   useEffect(() => {
     // SetDate()
-  
+
 
   }, [])
 
 
 
-  async function OnSend(message:any){
-    const trimmedMessage = message.trim(); 
+  async function OnSend(message: any) {
+    const trimmedMessage = message.trim();
 
-   
+
     if (!trimmedMessage) {
       console.log("Cannot send an empty message.");
       return;
@@ -143,26 +144,34 @@ const Chat: React.FC<InitialProps> = (props) => {
     const sentTo: any = routedData.id
 
     const docid = sentTo > sentBy ? sentBy + '_' + sentTo : sentTo + '_' + sentBy;
+    const chatDocRef = firestore().collection('Chat').doc(docid);
 
-  const msgRef = firestore()
-    .collection('Chat')
-    .doc(docid)
-    .collection('messages');
+    // Add or update the "Status" field in the Chat document
+    await chatDocRef.set(
+      { Status: true }, // or your desired status value
+      { merge: true } // Merge ensures you don't overwrite existing fields
+    );
 
-  const newmsgRef = msgRef.doc();
-  const msgId = newmsgRef.id;
+    const msgRef = firestore()
+      .collection('Chat')
+      .doc(docid)
+      .collection('messages');
 
-  let mymsg = {
-    messageId: msgId,
-    type: 'text',
-    message: message,
-    sentBy: sentBy,
-    sentTo: sentTo,
-    createdAt: new Date()
-  };
+    const newmsgRef = msgRef.doc();
+    const msgId = newmsgRef.id;
 
-  await newmsgRef.set(mymsg);
-  setMessage('')
+    let mymsg = {
+      messageId: msgId,
+      type: 'text',
+      message: message,
+      sentBy: sentBy,
+      sentTo: sentTo,
+      createdAt: new Date(),
+
+    };
+
+    await newmsgRef.set(mymsg);
+    setMessage('')
   }
 
 
@@ -171,7 +180,7 @@ const Chat: React.FC<InitialProps> = (props) => {
       <ChatHeader data={routedData} onPress={() => { props.navigation.goBack() }} />
       <FlatList
         data={messages}
-        renderItem={({item})=>renderItem(item,uid)}
+        renderItem={({ item }) => renderItem(item, uid)}
         keyExtractor={(item: Message, index: number) => index.toString()}
       />
       <View style={styles.inputContainer}>
@@ -179,11 +188,11 @@ const Chat: React.FC<InitialProps> = (props) => {
           style={styles.input}
           placeholder="Type a message..."
           value={message}
-          onChangeText={(text) => { setMessage(text)}}
+          onChangeText={(text) => { setMessage(text) }}
         />
         <TouchableComponent style={styles.sendButton} onPress={() => {
           OnSend(message)
-         }}>
+        }}>
           <Icon name="send" size={25} color="white" />
         </TouchableComponent>
       </View>
@@ -221,10 +230,10 @@ function ChatHeader({ data, onPress }: { data: any, onPress: () => void }) {
   );
 }
 
-let prevDate : any = '';
+let prevDate: any = '';
 
 function renderItem(item: Message, uid: string) {
-  const showDate  = item.showDate !== prevDate; // Compare the current message date with the previous one.
+  const showDate = item.showDate !== prevDate; // Compare the current message date with the previous one.
   if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
 
   return (
@@ -239,19 +248,19 @@ function renderItem(item: Message, uid: string) {
 
 
 
-function MyMsg({ item }: any) {
-  const showDate = prevDate !== item?.showDate; // Compare the current message date with the previous one.
-  if (showDate) prevDate = item?.showDate; // Update prevDate if the current date is different.
+// function MyMsg({ item }: any) {
+//   const showDate = prevDate !== item?.showDate; // Compare the current message date with the previous one.
+//   if (showDate) prevDate = item?.showDate; // Update prevDate if the current date is different.
 
-  return <Message item={item} show={showDate} mine={true} />;
-}
+//   return <Message item={item} show={showDate} mine={true} />;
+// }
 
-function OtherMsg({ item }: any) {
-  const showDate = prevDate !== item?.showDate;
-  if (showDate) prevDate = item?.showDate;
+// function OtherMsg({ item }: any) {
+//   const showDate = prevDate !== item?.showDate;
+//   if (showDate) prevDate = item?.showDate;
 
-  return <Message item={item} show={showDate} mine={false} />;
-}
+//   return <Message item={item} show={showDate} mine={false} />;
+// }
 
 function Message({ item, show, mine }: MessageProps) {
   return (
