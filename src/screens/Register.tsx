@@ -1,8 +1,8 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { AppText, Commonbtn, GoogleBtn, LWrapper } from "../utilities/Helpers";
 import { InitialProps } from "../utilities/Props";
-import { colors, fonts, Gender, width } from "../utilities/constants";
+import { colors, fonts, Gender, width,Realtion } from "../utilities/constants";
 import { CommonInput, CommonInputBtn } from "../utilities/Input";
 import { Images } from "../utilities/Images";
 import { useFormik } from "formik";
@@ -51,7 +51,9 @@ const Register: React.FC<InitialProps> = (props) => {
       showme: "",
       email: "",
       password: "",
-      
+      Lookingfor: "",
+      About: ""
+
     },
     validationSchema: registerSchema,
     onSubmit: () => { handleAdd() },
@@ -83,9 +85,11 @@ const Register: React.FC<InitialProps> = (props) => {
         email: formik.values.email,
         password: formik.values.password,
         images: [],
-        blocked:[],
-        favourite:[],
-        likes:[]
+        blocked: [],
+        favourite: [],
+        likes: [],
+        Lookingfor: formik.values.Lookingfor,
+        About: formik.values.About,
       });
 
       Alert.alert('Success', 'User data saved successfully!');
@@ -95,7 +99,8 @@ const Register: React.FC<InitialProps> = (props) => {
       Alert.alert('Error', 'Failed to save user data. Please try again.');
     }
   };
-
+  let err = ''
+  const errorspacing = err || 'no';
 
 
   return (
@@ -207,6 +212,81 @@ const Register: React.FC<InitialProps> = (props) => {
         }
         label="label"
       />
+        <DropInput
+                data={Realtion}
+                placeholder="Looking For"
+                imgsrc={Images.search}
+                value={formik.values.Lookingfor}
+                onChange={(item: any) => {
+                  formik.setFieldValue("Lookingfor", item.label);
+                }}
+                error={
+                  formik.touched.Lookingfor && formik.errors.Lookingfor
+                    ? formik.errors.Lookingfor
+                    : ""
+                }
+                errorspacing={
+                  formik.touched.Lookingfor && formik.errors.Lookingfor ? "yes" : "no"
+                }
+                label="label"
+              />
+              <View>
+                <View style={{
+                  position: 'relative',
+                  alignSelf: 'center',
+                  // justifyContent: 'center',
+                  shadowColor: colors.main2,
+                  shadowOpacity: 0.5,
+                  shadowRadius: 2,
+                  borderColor: colors.main2,
+                  shadowOffset: { width: 0, height: 0 },
+                  borderWidth: 1,
+                  height: 95,
+                  backgroundColor: colors.main1,
+                  borderRadius: 12,
+                  flexDirection: 'row',
+                  // alignItems: 'center',
+                  width: width / 1.15,
+                  elevation: 5,
+                  paddingLeft: 15,
+                }}>
+      
+      
+                  <TextInput
+                    style={{
+                      // fontFamily: Fonts.Regular,
+                      color: "black",
+                      fontSize: 14,
+                      marginLeft: 8,
+      
+                    }} value={formik.values.About}
+                    onFocus={() => {
+                      DoFocus("About");
+                    }}
+      
+                    textAlignVertical='top'
+                    placeholder="Describe Yourself"
+                    onChangeText={formik.handleChange("About")}
+                    onBlur={formik.handleBlur("About")}
+                  /></View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: colors.red,
+                    marginVertical: errorspacing === 'yes' ? 10 : 2,
+                    left: 15,
+                  }}
+                >
+                  {
+                    formik.touched.About && formik.errors.About
+                      ? formik.errors.About
+                      : ""
+                  }
+      
+                </Text>
+              </View>
+      
+          
 
       <Commonbtn
         title="Continue"

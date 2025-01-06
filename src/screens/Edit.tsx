@@ -12,8 +12,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DropInput } from "../utilities/DropInput";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Loading from "./Loading";
-import { Image } from "react-native";
+
 
 
 const Edit: React.FC<InitialProps> = (props) => {
@@ -303,7 +302,7 @@ const Edit: React.FC<InitialProps> = (props) => {
           </Text>
         </View>
 
-        <Text>{formik.errors.Lookingfor}</Text>
+     
         <Commonbtn
           title="Continue"
           onPress={() => {

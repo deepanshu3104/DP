@@ -13,7 +13,9 @@ export interface InitialProps {
 }
 export interface WrapperProps {
   children?: React.ReactNode;
-  value?:string
+  value?:string;
+  onPress?: () => void;
+
 }
 export interface ImageComponentProps {
   style?: ImageStyle;

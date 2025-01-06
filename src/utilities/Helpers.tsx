@@ -28,7 +28,7 @@ export const WrapperNoScroll: React.FC<WrapperProps> = ({ children }) => {
     </SafeAreaView>
   )
 }
-export const LWrapper: React.FC<WrapperProps> = ({ children, value }) => {
+export const LWrapper: React.FC<WrapperProps> = ({ children, value,onPress }) => {
   const navigate = useNavigation()
   return (
     <SafeAreaView style={styles.container}>
@@ -36,8 +36,8 @@ export const LWrapper: React.FC<WrapperProps> = ({ children, value }) => {
       <ScrollView>
         {children}
       </ScrollView>
-      {value === 'Login' ? <Text style={styles.lwtext1}>Don't have an Account ? <Text style={styles.lwtext2} onPress={() => { }}>Register</Text></Text> :
-        <Text style={styles.lwtext1}>Already have an Account ? <Text style={styles.lwtext2} onPress={() => { }}>Login</Text></Text>}
+      {value === 'Login' ? <Text style={styles.lwtext1}>Don't have an Account ? <Text style={styles.lwtext2} onPress={onPress}>Register</Text></Text> :
+        <Text style={styles.lwtext1}>Already have an Account ? <Text style={styles.lwtext2} onPress={onPress}>Login</Text></Text>}
     </SafeAreaView>
   )
 }

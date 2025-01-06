@@ -188,6 +188,12 @@ const Inbox: React.FC<InitialProps> = (props) => {
             />
           )}
           keyExtractor={(item: any, index: number) => index.toString()}
+          ListEmptyComponent={() => (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", alignSelf:'center' }}>
+              <Text style={{ fontSize: 18, color: "gray",alignSelf:'center' }}>There is no conversation yet 🫣</Text>
+            </View>
+          )}
+          
         />}
       <ChatFilter isVisible={filterModal} onBackdropPress={() => setFilterModal(false)} onModalHide={() => {
         // Alert.alert('hiii')

@@ -104,7 +104,9 @@ const Login: React.FC<InitialProps> = (props: any) => {
   // }
 
   return (
-    <LWrapper value="Login">
+    <LWrapper value="Login" onPress={() => {
+      props.navigation.navigate('Register')
+    }}>
       {loading && <Loadingcomponent />}
       <AppText style={styles.title}>Datify</AppText>
 
@@ -159,7 +161,7 @@ const Login: React.FC<InitialProps> = (props: any) => {
       <GoogleBtn onPress={() => {
         props.navigation.navigate('Register')
       }} />
-    </LWrapper>
+    </LWrapper >
   );
 };
 

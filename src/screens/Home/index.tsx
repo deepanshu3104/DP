@@ -24,7 +24,7 @@ const Home: React.FC<InitialProps> = (props) => {
     return (
       <TouchableComponent
         onPress={() => {
-          props.navigation.navigate("OtherProfile", { data: item });
+          props.navigation.navigate("OtherProfile",{ data: item });
         }}
         style={styles.cardView}
       >
@@ -121,7 +121,12 @@ const Home: React.FC<InitialProps> = (props) => {
           />
         </View>
       </View>
-      <FlatList data={products} numColumns={3} renderItem={renderProfiles} />
+      <FlatList data={products} numColumns={3} renderItem={renderProfiles}
+       ListEmptyComponent={() => (
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center", alignSelf:'center' }}>
+                    <Text style={{ fontSize: 18, color: "gray",alignSelf:'center' }}>There is no Profiles yet 🫣</Text>
+                  </View>
+                )} />
     </Wrapper>
   );
 };

@@ -26,6 +26,7 @@ interface MessageProps {
   item: Message;
   show: Boolean
   mine: Boolean
+  onPress?: () => void;
 }
 
 const Chat: React.FC<InitialProps> = (props) => {
@@ -121,17 +122,11 @@ const Chat: React.FC<InitialProps> = (props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [uid, setUid] = useState<any>('');
   const [message, setMessage] = useState<any>('');
-
-
-
   useEffect(() => {
     // SetDate()
 
 
   }, [])
-
-
-
   async function OnSend(message: any) {
     const trimmedMessage = message.trim();
 
@@ -162,7 +157,7 @@ const Chat: React.FC<InitialProps> = (props) => {
 
     let mymsg = {
       messageId: msgId,
-      type: 'text',
+      type : 'text',
       message: message,
       sentBy: sentBy,
       sentTo: sentTo,
@@ -245,23 +240,6 @@ function renderItem(item: Message, uid: string) {
   );
 }
 
-
-
-
-// function MyMsg({ item }: any) {
-//   const showDate = prevDate !== item?.showDate; // Compare the current message date with the previous one.
-//   if (showDate) prevDate = item?.showDate; // Update prevDate if the current date is different.
-
-//   return <Message item={item} show={showDate} mine={true} />;
-// }
-
-// function OtherMsg({ item }: any) {
-//   const showDate = prevDate !== item?.showDate;
-//   if (showDate) prevDate = item?.showDate;
-
-//   return <Message item={item} show={showDate} mine={false} />;
-// }
-
 function Message({ item, show, mine }: MessageProps) {
   return (
     <>
@@ -275,6 +253,14 @@ function Message({ item, show, mine }: MessageProps) {
           {item.showDate}
         </Text>
       )}
+      <MsgType item={item} show={show} mine={mine} />
+    </>
+  );
+}
+
+function MsgType({ item, show, mine ,props }: MessageProps) {
+  if (item.type == 'text') {
+    return (
       <View style={{
         alignSelf: mine ? 'flex-end' : 'flex-start',
         marginHorizontal: 15,
@@ -299,8 +285,45 @@ function Message({ item, show, mine }: MessageProps) {
           {item.timeString}
         </Text>
       </View>
-    </>
-  );
+    )
+  } else if (item.type == 'profile_share') {
+    return (
+      <TouchableComponent onPress={() => { props.navigation.navigate('Home') }}>
+    <View style={{
+      alignSelf: mine ? 'flex-end' : 'flex-start',
+      marginHorizontal: 15,
+      maxWidth: width / 1.7,
+      marginBottom: 10,
+    }}>
+      <View style={{
+        marginTop: 20,
+        flexDirection: 'row',
+        backgroundColor: '#f5f5f5',
+        height: 45,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: colors.main2,
+        borderRadius: 13,padding:10
+      }}>
+        <ImageComponent source={{ uri: item.profile.image }} style={{ height: width / 12, width: width / 12 ,marginRight:5, borderRadius: width/1 }}/>
+        <Text style={{
+          fontSize: 18,
+          color: "black",
+          fontWeight: '400'
+        }}>{item.profile.name}</Text>
+      </View>
+      <Text style={{
+          color: 'gray',
+          fontSize: width / 32,
+          marginTop: 5,
+          alignSelf: 'flex-end',
+        }}>
+          {item.timeString}
+        </Text>
+    </View>
+    </TouchableComponent>)
+  }
+
 }
 
 

@@ -15,6 +15,8 @@ export const Images = {
     d: require('./assets/4.png'),
     e: require('./assets/5.png'),
     f: require('./assets/6.png'),
+    share: require('./assets/share.png'),
+    check: require('./assets/check.png'),
 
 }
 

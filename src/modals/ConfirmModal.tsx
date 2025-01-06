@@ -76,6 +76,7 @@ const ConfirmModal = ({ isVisible, title,onPress, onBackdropPress,props }: any) 
   );
 };
 
+
 export default ConfirmModal;
 
 const styles = StyleSheet.create({});

@@ -23,6 +23,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import moment from "moment";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ShareModal from "../../modals/ShareModal";
 
 
 const OtherProfile: React.FC<InitialProps> = (props) => {
@@ -37,6 +38,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
   const [age, setAge] = useState('');
   const [loading, setLoading] = useState(false)
   const [favourite, setFavourite] = useState(false)
+  const [shareModal, setShareModal] = useState(false);
   useEffect(() => { handleConfirm() }, [])
   // useEffect(() => { fetchProducts() }, [favourite])
 
@@ -318,6 +320,12 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           <TouchableComponent onPress={() => fav()}>
             <Icon name={data.favourite ? 'star' : 'star-outline'} size={30} color={data.favourite ? '#FFD700' : '#6A5ACD'} />
           </TouchableComponent>
+          <TouchableComponent onPress={() => { setShareModal(true) }}>
+            <ImageComponent source={Images.share}
+              style={{ height: 30, width: 30 }}
+              resizeMode="contain"
+              tintColor="#6A5ACD" />
+          </TouchableComponent>
 
         </View>
       </View>
@@ -465,6 +473,14 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
           setBlockModal(false);
         }}
         onPress={() => fetchProducts()}
+      />
+      <ShareModal
+      data={data}
+      isVisible={shareModal}
+      title={"share list"}
+      onBackdropPress={()=>{
+        setShareModal(false)
+      }}
       />
     </WrapperNoScroll>
   );
