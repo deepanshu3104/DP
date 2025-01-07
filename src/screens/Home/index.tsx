@@ -50,7 +50,7 @@ const Home: React.FC<InitialProps> = (props) => {
           left:1,
           width:width/1
         }}>
-          <MaterialIcons name={"circle"} size={15} color={'green'} style={{marginHorizontal:5}} />
+        { item.Status == true && <MaterialIcons name={"circle"} size={15} color={'green'} style={{marginHorizontal:5}} />}
           <AppText style={{color: 'black', fontWeight: '600' }}>{item.name}</AppText>
         </LinearGradient>
         {/* </View> */}

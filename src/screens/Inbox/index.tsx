@@ -1,4 +1,4 @@
-import { Alert, FlatList, Image, Text, View } from "react-native";
+import { FlatList, Image, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
 
@@ -47,19 +47,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
             console.log("if part==>>")
             let otherUserId = a === user ? b : a;
             console.log('other id', otherUserId)
-            // Check if the user is in the blocked list
-            //   const blockedUsersSnapshot = await firestore()
-            //   .collection('Users')
-            //   // .doc('blocked')
-            //   // .collection('blocked')
-            //   .where('blocked[]', '==', otherUserId)
-            //   .get();
-
-            // if (!blockedUsersSnapshot.empty) {
-            //   console.log(`User ${otherUserId} is blocked. Skipping chat.`);
-            //   continue; // Skip this chat if the other user is blocked
-            // }
-
+         
             const userSnapshot = await firestore()
               .collection('Users')
               .where('id', '==', otherUserId)

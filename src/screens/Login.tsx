@@ -4,11 +4,9 @@ import {
   AppText,
   Commonbtn,
   GoogleBtn,
-  ImageComponent,
   Loadingcomponent,
   LWrapper,
   SpaceComponent,
-  TouchableComponent,
 } from "../utilities/Helpers";
 import { Images } from "../utilities/Images";
 import { colors, fonts, width } from "../utilities/constants";
@@ -61,13 +59,19 @@ const Login: React.FC<InitialProps> = (props: any) => {
       // Assuming only one user with a unique email
       const userDoc = querySnapshot.docs[0];
       const user = userDoc.data();
+      console.log('nitin don', user);
 
       if (user) {
         // Replace this with hashed password comparison in production
         const isPasswordValid = user.password === password;
 
         if (isPasswordValid) {
+          await firestore()
+          .collection("Users")
+          .doc(userDoc.id)
+          .update({ Status: true });
           await AsyncStorage.setItem("uid", userDoc.id);
+          
           props.navigation.navigate('Home')
           setLoading(false);
           return true;
@@ -96,13 +100,6 @@ const Login: React.FC<InitialProps> = (props: any) => {
     });
     setFocus([...focus])
   }
-
-
-
-  // function Login() {
-  //   Alert.alert('Login')
-  // }
-
   return (
     <LWrapper value="Login" onPress={() => {
       props.navigation.navigate('Register')
@@ -178,7 +175,6 @@ const styles = StyleSheet.create({
     marginVertical: width / 11
   },
   logo: { width: width / 1.1, height: width / 1.5, alignSelf: "center", marginVertical: width / 6 },
-
   forgotpass: {
     alignSelf: 'flex-end',
     right: 15,
@@ -193,12 +189,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontSize: 16
   },
-  dontrem: {
+  dontrem:
+  {
     alignSelf: 'center',
     color: colors.main2,
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 8,
-
   }
 });

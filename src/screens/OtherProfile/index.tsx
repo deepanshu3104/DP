@@ -397,7 +397,7 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
             {data.gender}</AppText>
 
         </View>
-        <View style={{
+     { data.Status == true ?  <View style={{
           flexDirection: 'row',
           width: width / 4,
           // justifyContent: 'space-around',
@@ -413,7 +413,23 @@ const OtherProfile: React.FC<InitialProps> = (props) => {
         }}>
           <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} />
           <AppText style={{ color: "black" }}> Online Now</AppText>
-        </View>
+        </View>:<View style={{
+          flexDirection: 'row',
+          width: width / 4,
+          // justifyContent: 'space-around',
+          marginTop: 10,
+          backgroundColor: '#dfd6ef',
+          height: 35,
+          alignItems: 'center',
+          marginHorizontal: 20,
+          borderWidth: 1,
+          borderColor: colors.main2,
+          borderRadius: 13,
+          padding: 5
+        }}>
+          {/* <MaterialIcons name={"circle"} size={15} color={'green'} style={{}} /> */}
+          <AppText style={{ color: "black",textAlign:'center' }}> Offline 😴</AppText>
+        </View> }
         <View style={{
           padding: 10,
           justifyContent: 'center',

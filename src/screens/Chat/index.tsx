@@ -259,7 +259,7 @@ function Message({ item, show, mine }: MessageProps) {
 }
 
 function MsgType({ item, show, mine ,props }: MessageProps) {
-  if (item.type == 'text') {
+  if (item.type  == 'text') {
     return (
       <View style={{
         alignSelf: mine ? 'flex-end' : 'flex-start',

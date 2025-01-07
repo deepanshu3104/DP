@@ -138,6 +138,11 @@ const Profile: React.FC<InitialProps> = (props) => {
         onPress={async () => {
           try {
             // Clear the stored user ID from AsyncStorage
+            const uid :any = await AsyncStorage.getItem('uid');
+            await firestore()
+            .collection('Users')
+            .doc(uid)
+            .update({ Status: false });
             await AsyncStorage.removeItem("uid");
 
             // Navigate to the login screen
