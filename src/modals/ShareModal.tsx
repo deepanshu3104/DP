@@ -59,11 +59,7 @@ const ShareModal = ({ data, isVisible, title, onPress, onBackdropPress, props }:
                 const message = {
                     messageId: msgId,
                     type: "profile_share",
-                    profile: {
-                        id: profileToShare.id,
-                        name: profileToShare.name,
-                        image: profileToShare.images?.[0] || null,
-                    },
+                    profile: profileToShare,
                     sentBy,
                     sentTo,
                     createdAt: new Date(),

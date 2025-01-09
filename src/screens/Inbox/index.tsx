@@ -1,7 +1,6 @@
 import { FlatList, Image, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
-
   TouchableComponent,
   Wrapper,
 } from "../../utilities/Helpers";
@@ -26,34 +25,30 @@ const Inbox: React.FC<InitialProps> = (props) => {
   const [loading, setLoading] = useState(true);
 
   const GetChats = async () => {
-
     let user = await AsyncStorage.getItem('uid');
-    console.log(user, 'yyyyyyyy');
-    console.log(user, 'deeppepe');
-
+    console.log(user, 'User ID');
+  
     try {
       const querySnapshot = await firestore().collection('Chat').get();
       let chats: any = [];
-
+  
       if (!querySnapshot.empty) {
-        console.log('jjjjj');
-
         for (const doc of querySnapshot.docs) {
           const [a, b] = doc.id.split('_');
-          console.log(a, b, 'vishu');
-
-
+          console.log(a, b, 'Chat participants');
+  
           if (a === user || b === user) {
-            console.log("if part==>>")
+            console.log("Processing chat...");
+  
             let otherUserId = a === user ? b : a;
-            console.log('other id', otherUserId)
-         
+            console.log('Other User ID:', otherUserId);
+  
             const userSnapshot = await firestore()
               .collection('Users')
               .where('id', '==', otherUserId)
               .get();
-            console.log(userSnapshot, 'userSnapshot');
-
+            console.log(userSnapshot, 'User Snapshot');
+  
             if (!userSnapshot.empty) {
               const userData = userSnapshot.docs[0].data();
               const messagesSnapshot = await firestore()
@@ -63,54 +58,56 @@ const Inbox: React.FC<InitialProps> = (props) => {
                 .orderBy('createdAt', 'desc')
                 .limit(1)
                 .get();
-              console.log(userData, 'userData');
+              console.log(userData, 'User Data');
+  
               let lastMessage: any = null;
               let timeString = null;
-              // console.log(messagesSnapshot._query._collectionPath._parts[1]);
+  
               if (!messagesSnapshot.empty) {
-                lastMessage = messagesSnapshot.docs[0].data();
-                // console.log(messagesSnapshot.docs[0].data());
-                const timestamp = lastMessage.createdAt.toDate();
-                const hours = timestamp.getHours();
-                const minutes = timestamp.getMinutes();
-                const ampm = hours >= 12 ? 'pm' : 'am';
-                const formattedHours = hours % 12 || 12;
-                timeString = `${formattedHours}:${minutes
-                  .toString()
-                  .padStart(2, '0')} ${ampm}`;
+                const messageData = messagesSnapshot.docs[0].data();
+  
+                // Check if the user is in deleteCh
+                lastMessage = messageData.deleteCh?.includes(user)
+                  ? null // Don't show message if user is in deleteCh
+                  : messageData.message;
+  
+                if (messageData.createdAt) {
+                  const timestamp = messageData.createdAt.toDate();
+                  const hours = timestamp.getHours();
+                  const minutes = timestamp.getMinutes();
+                  const ampm = hours >= 12 ? 'pm' : 'am';
+                  const formattedHours = hours % 12 || 12;
+                  timeString = `${formattedHours}:${minutes
+                    .toString()
+                    .padStart(2, '0')} ${ampm}`;
+                }
               }
-
+  
               const chatItem = {
                 id: otherUserId,
                 name: userData.name,
                 images: userData.images,
-                lastMessage: lastMessage.message,
+                lastMessage: lastMessage, // Message is null if user is in deleteCh
                 lastMsgTime: timeString,
               };
-              console.log(chatItem, 'deeps');
-
+              console.log(chatItem, 'Chat Item');
+  
               chats.push(chatItem);
             }
           }
         }
       }
       setChatData(chats);
-      console.log(chats, "vvvvvvvvvvvvvvvvvv");
-
-
+      console.log(chats, "Chats fetched");
     } catch (error) {
-
       console.error('Error fetching documents:', error);
     } finally {
       setLoading(false); // Set loading to false once data is fetched
     }
   };
-
-
-
-
-
+  
   const [filterModal, setFilterModal] = useState(false);
+
   return (
     <Wrapper>
 
@@ -177,11 +174,11 @@ const Inbox: React.FC<InitialProps> = (props) => {
           )}
           keyExtractor={(item: any, index: number) => index.toString()}
           ListEmptyComponent={() => (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", alignSelf:'center' }}>
-              <Text style={{ fontSize: 18, color: "gray",alignSelf:'center' }}>There is no conversation yet 🫣</Text>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", alignSelf: 'center' }}>
+              <Text style={{ fontSize: 18, color: "gray", alignSelf: 'center' }}>There is no conversation yet 🫣</Text>
             </View>
           )}
-          
+
         />}
       <ChatFilter isVisible={filterModal} onBackdropPress={() => setFilterModal(false)} onModalHide={() => {
         // Alert.alert('hiii')
@@ -198,7 +195,10 @@ interface RenderItemProps {
   onPress: () => void;
 }
 
+
 function RenderItem({ item, index, onPress }: RenderItemProps) {
+
+
   return (
 
     <TouchableComponent style={styles.messageItem} onPress={onPress}>

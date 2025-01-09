@@ -7,7 +7,7 @@ import {
   TouchableText,
 } from "../utilities/Helpers";
 import { colors, width } from "../utilities/constants";
-import firestore from '@react-native-firebase/firestore';
+
 
 
 const ConfirmModal = ({ isVisible, title,onPress, onBackdropPress,props }: any) => {

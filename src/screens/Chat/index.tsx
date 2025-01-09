@@ -1,10 +1,9 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList,} from "react-native";
 import React, { useState, useEffect } from "react";
-import { ImageComponent, TouchableComponent, Wrapper, WrapperNoScroll } from "../../utilities/Helpers";
+import { ImageComponent, TouchableComponent,WrapperNoScroll } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
 import { styles } from "./style";
 import { colors, width } from "../../utilities/constants";
-import moment from "moment";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { TextInput } from "react-native";
@@ -12,6 +11,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import Icon from 'react-native-vector-icons/Feather';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ThreedotModal from "../../modals/ThreedotModal";
+import ConfirmModal from "../../modals/ConfirmModal";
 
 
 interface Message {
@@ -27,11 +28,14 @@ interface MessageProps {
   show: Boolean
   mine: Boolean
   onPress?: () => void;
+  onProfilePress?: ()=>void
+  props?:any
+
 }
 
 const Chat: React.FC<InitialProps> = (props) => {
 
-
+  const [chunnu, setChunnu] = useState<any>(false)
 
   const routedData = props.route.params.data
 
@@ -93,6 +97,7 @@ const Chat: React.FC<InitialProps> = (props) => {
       console.error('Error fetching chat messages:', error);
     }
   };
+
   const formatTime = (timestamp: any) => {
     const currentDate: any = new Date();
     const targetDate: any = new Date(timestamp);
@@ -157,23 +162,122 @@ const Chat: React.FC<InitialProps> = (props) => {
 
     let mymsg = {
       messageId: msgId,
-      type : 'text',
+      type: 'text',
       message: message,
       sentBy: sentBy,
       sentTo: sentTo,
       createdAt: new Date(),
-
+      deleteCh :[],
+     
     };
 
     await newmsgRef.set(mymsg);
     setMessage('')
   }
+  const [blockModal, setBlockModal] = useState(false);
+  const [chatModal, setChatModal] = useState(false);
+
+  const block = async () => {
+
+    try {
+      const querySnapshot = await firestore().collection('Users').get();
+      const uid: any = await AsyncStorage.getItem('uid')
+
+      let dataa: any = [];
+      querySnapshot.forEach(documentSnapshot => {
+
+        if (documentSnapshot.id == uid) {
+          dataa.push({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          });
+        }
+
+      });
+
+      console.log('user data==>>>>', dataa);
+
+      const firstUserRef = firestore().collection('Users').doc(uid);
+      await firstUserRef.update({
+        blocked: [...dataa[0].blocked, routedData.id]
+      });
+
+      const sentBy: any = await AsyncStorage.getItem('uid')
+      const sentTo: any = routedData.id
+      const docid = sentTo > sentBy ? sentBy + '_' + sentTo : sentTo + '_' + sentBy;
+      console.log(docid, "chatssss vishu");
+
+      const msgRef = await firestore()
+        .collection('Chat')
+        .doc(docid)
+        .delete()
+      console.log(msgRef, " chatssssssss deleted")
+      console.log('done');
+      setBlockModal(false)
+      props.navigation.navigate('Home')
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const deleteChat = async () => {
+    try {
+      const uid = await AsyncStorage.getItem('uid');
+      if (!uid) {
+        console.error("User ID not found in AsyncStorage");
+        return;
+      }
+  
+      const sentTo = routedData.id;
+      const docid = sentTo > uid ? `${uid}_${sentTo}` : `${sentTo}_${uid}`;
+      
+      const chatRef = firestore().collection('Chat').doc(docid).collection('messages');
+      const messagesSnapshot = await chatRef.get();
+  
+      const batch = firestore().batch();
+  
+      messagesSnapshot.forEach((doc) => {
+        batch.update(doc.ref, { deleteCh: uid });
+      });
+  
+      await batch.commit();
+  
+      console.log("All messages deleted successfully for chat:", docid);
+      setChatModal(false);
+    } catch (error) {
+      console.error("Error deleting chat messages:", error);
+    }
+  };
+  
+
+  let prevDate: any = '';
+
+function renderItem(item: Message, uid: string) {
+  const showDate = item.showDate !== prevDate; // Compare the current message date with the previous one.
+  if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
+ const status  = item.deleteCh.includes(uid)
+ console.log(status);
+ if(!status){
+  return (
+  <Message
+      item={item}
+      show={showDate}
+      mine={item.sentBy === uid}
+      props={props}
+    />
+  );
+}
+}
 
 
   return (
     <WrapperNoScroll>
-      <ChatHeader data={routedData} onPress={() => { props.navigation.goBack() }} />
-      <FlatList
+      <ChatHeader
+        data={routedData}
+        onPress={() => { props.navigation.goBack() }}
+        onDotsPress={() => { setChunnu(!chunnu) }} />
+
+    <FlatList
         data={messages}
         renderItem={({ item }) => renderItem(item, uid)}
         keyExtractor={(item: Message, index: number) => index.toString()}
@@ -191,15 +295,51 @@ const Chat: React.FC<InitialProps> = (props) => {
           <Icon name="send" size={25} color="white" />
         </TouchableComponent>
       </View>
+      <ThreedotModal
+        isVisible={chunnu}
+
+        onBackdropPress={() => {
+          setChunnu(false);
+        }}
+        onBlockPress={() => {
+          setChunnu(false);
+          setBlockModal(true)
+        }}
+        onChatPress={() => {
+          setChunnu(false);
+          setChatModal(true)
+        }}
+      // onPress={() => fetchProducts()}
+      />
+
+      <ConfirmModal
+        isVisible={blockModal}
+        title={`Are You sure you want to Block ?`}
+        onBackdropPress={() => {
+          setBlockModal(false);
+        }}
+
+        onPress={() => block()}
+      />
+      <ConfirmModal
+        isVisible={chatModal}
+        title={`Are You sure you want to delete chat ?`}
+        onBackdropPress={() => {
+          setChatModal(false);
+        }}
+
+        onPress={() => deleteChat()}
+      />
     </WrapperNoScroll>
   );
 };
+
 
 export default Chat;
 
 
 
-function ChatHeader({ data, onPress }: { data: any, onPress: () => void }) {
+function ChatHeader({ data, onPress, onDotsPress }: { data: any, onPress: () => void, onDotsPress: () => void }) {
 
   return (
     <View style={styles.headerview}>
@@ -219,28 +359,14 @@ function ChatHeader({ data, onPress }: { data: any, onPress: () => void }) {
           </View>}
         <Text style={{ marginLeft: 10, color: colors.black, fontSize: width / 25, fontWeight: '500' }}>{data?.name}</Text>
       </View>
-      <Entypo name={"dots-three-vertical"} size={24} color={colors.main2} onPress={() => {
-      }} />
+      <Entypo name={"dots-three-vertical"} size={24} color={colors.main2} onPress={onDotsPress} />
     </View>
   );
 }
 
-let prevDate: any = '';
 
-function renderItem(item: Message, uid: string) {
-  const showDate = item.showDate !== prevDate; // Compare the current message date with the previous one.
-  if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
 
-  return (
-    <Message
-      item={item}
-      show={showDate}
-      mine={item.sentBy === uid}
-    />
-  );
-}
-
-function Message({ item, show, mine }: MessageProps) {
+function Message({ item, show, mine,props}: MessageProps) {
   return (
     <>
       {show && item.showDate && (
@@ -253,13 +379,13 @@ function Message({ item, show, mine }: MessageProps) {
           {item.showDate}
         </Text>
       )}
-      <MsgType item={item} show={show} mine={mine} />
+      <MsgType item={item} show={show} mine={mine} props={props} />
     </>
   );
 }
 
-function MsgType({ item, show, mine ,props }: MessageProps) {
-  if (item.type  == 'text') {
+function MsgType({ item, show, mine,props }: MessageProps) {
+  if (item.type == 'text') {
     return (
       <View style={{
         alignSelf: mine ? 'flex-end' : 'flex-start',
@@ -288,40 +414,48 @@ function MsgType({ item, show, mine ,props }: MessageProps) {
     )
   } else if (item.type == 'profile_share') {
     return (
-      <TouchableComponent onPress={() => { props.navigation.navigate('Home') }}>
-    <View style={{
-      alignSelf: mine ? 'flex-end' : 'flex-start',
-      marginHorizontal: 15,
-      maxWidth: width / 1.7,
-      marginBottom: 10,
-    }}>
-      <View style={{
-        marginTop: 20,
-        flexDirection: 'row',
-        backgroundColor: '#f5f5f5',
-        height: 45,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: colors.main2,
-        borderRadius: 13,padding:10
-      }}>
-        <ImageComponent source={{ uri: item.profile.image }} style={{ height: width / 12, width: width / 12 ,marginRight:5, borderRadius: width/1 }}/>
-        <Text style={{
-          fontSize: 18,
-          color: "black",
-          fontWeight: '400'
-        }}>{item.profile.name}</Text>
-      </View>
-      <Text style={{
-          color: 'gray',
-          fontSize: width / 32,
-          marginTop: 5,
-          alignSelf: 'flex-end',
+      <TouchableComponent onPress={()=>[
+        props.navigation.navigate("OtherProfile",{data:item.profile})
+      ]}>
+        <View style={{
+          alignSelf: mine ? 'flex-end' : 'flex-start',
+          marginHorizontal: 15,
+          maxWidth: width / 1.7,
+          marginBottom: 10,
         }}>
-          {item.timeString}
-        </Text>
-    </View>
-    </TouchableComponent>)
+          <View style={{
+            marginTop: 20,
+            flexDirection: 'row',
+            backgroundColor: '#f5f5f5',
+            height: 45,
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: colors.main2,
+            borderRadius: 13, padding: 10
+          }}>
+            <ImageComponent source={{ uri: item.profile.image }}
+              style={{
+                height: width / 12,
+                width: width / 12,
+                marginRight: 5,
+                borderRadius: width / 1
+              }} />
+            <Text style={{
+              fontSize: 18,
+              color: "black",
+              fontWeight: '400'
+            }}>{item.profile.name}</Text>
+          </View>
+          <Text style={{
+            color: 'gray',
+            fontSize: width / 32,
+            marginTop: 5,
+            alignSelf: 'flex-end',
+          }}>
+            {item.timeString}
+          </Text>
+        </View>
+      </TouchableComponent>)
   }
 
 }
