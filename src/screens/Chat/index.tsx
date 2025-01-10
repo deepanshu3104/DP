@@ -1,6 +1,6 @@
-import { View, Text, FlatList,} from "react-native";
+import { View, Text, FlatList, } from "react-native";
 import React, { useState, useEffect } from "react";
-import { ImageComponent, TouchableComponent,WrapperNoScroll } from "../../utilities/Helpers";
+import { ImageComponent, TouchableComponent, WrapperNoScroll } from "../../utilities/Helpers";
 import { InitialProps } from "../../utilities/Props";
 import { styles } from "./style";
 import { colors, width } from "../../utilities/constants";
@@ -28,8 +28,8 @@ interface MessageProps {
   show: Boolean
   mine: Boolean
   onPress?: () => void;
-  onProfilePress?: ()=>void
-  props?:any
+  onProfilePress?: () => void
+  props?: any
 
 }
 
@@ -37,15 +37,116 @@ const Chat: React.FC<InitialProps> = (props) => {
 
   const [chunnu, setChunnu] = useState<any>(false)
 
+
   const routedData = props.route.params.data
 
   useEffect(() => {
     console.log("useEffect")
 
     fetchChatMessages();
+    Seenchats()
   }, []);
 
+  useEffect(() => {
+    const setActiveStatus = async (status: boolean) => {
+      const uid = await AsyncStorage.getItem('uid');
+      if (!uid) return;
+  
+      const userRef = firestore().collection('Users').doc(uid);
+      await userRef.update({ isActive: status });
+    };
+  
+    // Mark as active when entering the chat
+    setActiveStatus(true);
+  
+    // Mark as inactive when leaving the chat
+    return () => {
+      setActiveStatus(false);
+    };
+  }, []);
+  
+
+  const listenToMessages = () => {
+    const docId =
+      routedData.id > uid ? `${uid}_${routedData.id}` : `${routedData.id}_${uid}`;
+  
+    const messageRef = firestore()
+      .collection('Chat')
+      .doc(docId)
+      .collection('messages');
+  
+    const unsubscribe = messageRef.onSnapshot(async (snapshot) => {
+      const myUid = await AsyncStorage.getItem('uid');
+      const otherUid = routedData.id;
+  
+      const userRef = firestore().collection('Users').doc(otherUid);
+      const userSnapshot = await userRef.get();
+  
+      if (userSnapshot.exists && userSnapshot.data()?.isActive) {
+        const batch = firestore().batch();
+  
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          if (data.seen === false && data.sentTo === myUid) {
+            batch.update(doc.ref, { seen: true });
+          }
+        });
+  
+        await batch.commit();
+      }
+    });
+  
+    return unsubscribe;
+  };
+  
+  useEffect(() => {
+    const unsubscribe = listenToMessages();
+  
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  
+  const Seenchats = async () => {
+    try {
+      const myUid = await AsyncStorage.getItem('uid');
+      const otherUid = routedData.id;
+  
+      const docId =
+        otherUid > myUid ? `${myUid}_${otherUid}` : `${otherUid}_${myUid}`;
+  
+      const messageRef = firestore()
+        .collection('Chat')
+        .doc(docId)
+        .collection('messages');
+  
+      const userRef = firestore().collection('Users').doc(otherUid);
+      const userSnapshot = await userRef.get();
+  
+      if (userSnapshot.exists && userSnapshot.data()?.isActive) {
+        const querySnapshot = await messageRef.get();
+        const batch = firestore().batch();
+  
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.seen === false && data.sentTo === myUid) {
+            batch.update(doc.ref, { seen: true });
+          }
+        });
+  
+        await batch.commit();
+      }
+    } catch (error) {
+      console.error('Error updating seen field:', error);
+    }
+  };
+  
+  
+
+
   const fetchChatMessages = async () => {
+    console.log(fetchChatMessages,"chaaaaaaatsssssssss");
+    
     try {
       const myUid: any = await AsyncStorage.getItem('uid')
       setUid(myUid)
@@ -54,7 +155,7 @@ const Chat: React.FC<InitialProps> = (props) => {
       const docId =
         otherUid > myUid ? `${myUid}_${otherUid}` : `${otherUid}_${myUid}`;
 
-      console.log(docId, ('.....................'));
+  
       const messageRef = firestore()
         .collection('Chat')
         .doc(docId)
@@ -64,7 +165,7 @@ const Chat: React.FC<InitialProps> = (props) => {
       const unSubscribe = messageRef.onSnapshot(querySnap => {
         const allMessages: any = querySnap.docs.map(docSnap => {
           const data1 = docSnap.data();
-          console.log(data1, "dee[");
+        
 
           const timestamp = data1.createdAt.toDate();
           const date = formatTime(timestamp);
@@ -85,7 +186,7 @@ const Chat: React.FC<InitialProps> = (props) => {
 
           };
         });
-        console.log(allMessages, 'alll');
+        
 
         setMessages(allMessages);
       });
@@ -127,11 +228,7 @@ const Chat: React.FC<InitialProps> = (props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [uid, setUid] = useState<any>('');
   const [message, setMessage] = useState<any>('');
-  useEffect(() => {
-    // SetDate()
-
-
-  }, [])
+  
   async function OnSend(message: any) {
     const trimmedMessage = message.trim();
 
@@ -167,8 +264,11 @@ const Chat: React.FC<InitialProps> = (props) => {
       sentBy: sentBy,
       sentTo: sentTo,
       createdAt: new Date(),
-      deleteCh :[],
-     
+      deleteCh: [],
+      seen: false,
+      isActive:false
+
+
     };
 
     await newmsgRef.set(mymsg);
@@ -195,7 +295,7 @@ const Chat: React.FC<InitialProps> = (props) => {
 
       });
 
-      console.log('user data==>>>>', dataa);
+    
 
       const firstUserRef = firestore().collection('Users').doc(uid);
       await firstUserRef.update({
@@ -205,7 +305,7 @@ const Chat: React.FC<InitialProps> = (props) => {
       const sentBy: any = await AsyncStorage.getItem('uid')
       const sentTo: any = routedData.id
       const docid = sentTo > sentBy ? sentBy + '_' + sentTo : sentTo + '_' + sentBy;
-      console.log(docid, "chatssss vishu");
+      
 
       const msgRef = await firestore()
         .collection('Chat')
@@ -227,47 +327,45 @@ const Chat: React.FC<InitialProps> = (props) => {
         console.error("User ID not found in AsyncStorage");
         return;
       }
-  
+
       const sentTo = routedData.id;
       const docid = sentTo > uid ? `${uid}_${sentTo}` : `${sentTo}_${uid}`;
-      
+
       const chatRef = firestore().collection('Chat').doc(docid).collection('messages');
       const messagesSnapshot = await chatRef.get();
-  
+
       const batch = firestore().batch();
-  
+
       messagesSnapshot.forEach((doc) => {
         batch.update(doc.ref, { deleteCh: uid });
       });
-  
-      await batch.commit();
-  
+    await batch.commit();
       console.log("All messages deleted successfully for chat:", docid);
       setChatModal(false);
     } catch (error) {
       console.error("Error deleting chat messages:", error);
     }
   };
-  
+
 
   let prevDate: any = '';
 
-function renderItem(item: Message, uid: string) {
-  const showDate = item.showDate !== prevDate; // Compare the current message date with the previous one.
-  if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
- const status  = item.deleteCh.includes(uid)
- console.log(status);
- if(!status){
-  return (
-  <Message
-      item={item}
-      show={showDate}
-      mine={item.sentBy === uid}
-      props={props}
-    />
-  );
-}
-}
+  function renderItem(item: Message, uid: string) {
+    const showDate = item.showDate !== prevDate; // Compare the current message date with the previous one.
+    if (showDate) prevDate = item.showDate; // Update prevDate if the current date is different.
+    const status = item.deleteCh?.includes(uid)
+    console.log(status);
+    if (!status) {
+      return (
+        <Message
+          item={item}
+          show={showDate}
+          mine={item.sentBy === uid}
+          props={props}
+        />
+      );
+    }
+  }
 
 
   return (
@@ -277,7 +375,7 @@ function renderItem(item: Message, uid: string) {
         onPress={() => { props.navigation.goBack() }}
         onDotsPress={() => { setChunnu(!chunnu) }} />
 
-    <FlatList
+      <FlatList
         data={messages}
         renderItem={({ item }) => renderItem(item, uid)}
         keyExtractor={(item: Message, index: number) => index.toString()}
@@ -297,7 +395,6 @@ function renderItem(item: Message, uid: string) {
       </View>
       <ThreedotModal
         isVisible={chunnu}
-
         onBackdropPress={() => {
           setChunnu(false);
         }}
@@ -309,7 +406,7 @@ function renderItem(item: Message, uid: string) {
           setChunnu(false);
           setChatModal(true)
         }}
-      // onPress={() => fetchProducts()}
+      
       />
 
       <ConfirmModal
@@ -366,7 +463,7 @@ function ChatHeader({ data, onPress, onDotsPress }: { data: any, onPress: () => 
 
 
 
-function Message({ item, show, mine,props}: MessageProps) {
+function Message({ item, show, mine, props }: MessageProps) {
   return (
     <>
       {show && item.showDate && (
@@ -384,7 +481,7 @@ function Message({ item, show, mine,props}: MessageProps) {
   );
 }
 
-function MsgType({ item, show, mine,props }: MessageProps) {
+function MsgType({ item, show, mine, props }: MessageProps) {
   if (item.type == 'text') {
     return (
       <View style={{
@@ -410,12 +507,20 @@ function MsgType({ item, show, mine,props }: MessageProps) {
         }}>
           {item.timeString}
         </Text>
+     { item.seen == true && mine &&  <Text style={{
+            color: 'gray',
+            fontSize: width / 32,
+            marginTop: 5,
+            alignSelf: 'flex-end',
+          }}>
+            seen
+          </Text>}
       </View>
     )
   } else if (item.type == 'profile_share') {
     return (
-      <TouchableComponent onPress={()=>[
-        props.navigation.navigate("OtherProfile",{data:item.profile})
+      <TouchableComponent onPress={() => [
+        props.navigation.navigate("OtherProfile", { data: item.profile })
       ]}>
         <View style={{
           alignSelf: mine ? 'flex-end' : 'flex-start',
@@ -454,13 +559,20 @@ function MsgType({ item, show, mine,props }: MessageProps) {
           }}>
             {item.timeString}
           </Text>
+         {item.seen == true && mine && <Text style={{
+            color: 'gray',
+            fontSize: width / 32,
+            marginTop: 5,
+            alignSelf:  'flex-end',
+          }}>
+          seen
+          </Text>}
+          
         </View>
       </TouchableComponent>)
   }
 
 }
-
-
 const categorizeDate = (timestamp: string | Date) => {
   const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
   const now = new Date();

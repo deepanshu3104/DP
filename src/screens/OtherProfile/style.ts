@@ -13,6 +13,6 @@ import { colors, fonts, width } from "../../utilities/constants";
   },
   headerView2:{
     width:width/6,
-    right:10
+    right:20
   }
   });

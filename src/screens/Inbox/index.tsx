@@ -27,28 +27,28 @@ const Inbox: React.FC<InitialProps> = (props) => {
   const GetChats = async () => {
     let user = await AsyncStorage.getItem('uid');
     console.log(user, 'User ID');
-  
+
     try {
       const querySnapshot = await firestore().collection('Chat').get();
       let chats: any = [];
-  
+
       if (!querySnapshot.empty) {
         for (const doc of querySnapshot.docs) {
           const [a, b] = doc.id.split('_');
           console.log(a, b, 'Chat participants');
-  
+
           if (a === user || b === user) {
             console.log("Processing chat...");
-  
+
             let otherUserId = a === user ? b : a;
             console.log('Other User ID:', otherUserId);
-  
+
             const userSnapshot = await firestore()
               .collection('Users')
               .where('id', '==', otherUserId)
               .get();
             console.log(userSnapshot, 'User Snapshot');
-  
+
             if (!userSnapshot.empty) {
               const userData = userSnapshot.docs[0].data();
               const messagesSnapshot = await firestore()
@@ -59,18 +59,16 @@ const Inbox: React.FC<InitialProps> = (props) => {
                 .limit(1)
                 .get();
               console.log(userData, 'User Data');
-  
+
               let lastMessage: any = null;
               let timeString = null;
-  
+
               if (!messagesSnapshot.empty) {
                 const messageData = messagesSnapshot.docs[0].data();
-  
-                // Check if the user is in deleteCh
                 lastMessage = messageData.deleteCh?.includes(user)
-                  ? null // Don't show message if user is in deleteCh
+                  ? ''
                   : messageData.message;
-  
+
                 if (messageData.createdAt) {
                   const timestamp = messageData.createdAt.toDate();
                   const hours = timestamp.getHours();
@@ -82,7 +80,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
                     .padStart(2, '0')} ${ampm}`;
                 }
               }
-  
+
               const chatItem = {
                 id: otherUserId,
                 name: userData.name,
@@ -91,7 +89,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
                 lastMsgTime: timeString,
               };
               console.log(chatItem, 'Chat Item');
-  
+
               chats.push(chatItem);
             }
           }
@@ -105,7 +103,7 @@ const Inbox: React.FC<InitialProps> = (props) => {
       setLoading(false); // Set loading to false once data is fetched
     }
   };
-  
+
   const [filterModal, setFilterModal] = useState(false);
 
   return (
@@ -174,8 +172,19 @@ const Inbox: React.FC<InitialProps> = (props) => {
           )}
           keyExtractor={(item: any, index: number) => index.toString()}
           ListEmptyComponent={() => (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", alignSelf: 'center' }}>
-              <Text style={{ fontSize: 18, color: "gray", alignSelf: 'center' }}>There is no conversation yet 🫣</Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: 'center'
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "gray",
+                  alignSelf: 'center'
+                }}>There is no conversation yet 🫣</Text>
             </View>
           )}
 
@@ -205,8 +214,8 @@ function RenderItem({ item, index, onPress }: RenderItemProps) {
       <View style={styles.messageImageView}>
         <Image source={{ uri: item.images[0] }}
           style={{
-            height: width / 7.5,
-            width: width / 7.5,
+            height: width / 6.5,
+            width: width / 6.5,
             marginHorizontal: 10,
             marginLeft: 10,
             borderRadius: 8
